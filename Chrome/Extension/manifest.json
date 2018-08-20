@@ -1,0 +1,37 @@
+{
+    "name": "Socketify",
+    "description": "Raw TCP & UDP Sockets",
+    "version": "1.0.0",
+    "browser_action": {
+        "default_popup": "popup.html",
+        "default_icon": "icon.png"
+    },
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": true
+    },
+    "permissions": [
+        "nativeMessaging",
+        "tabs",
+        "storage",
+        "*://*/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*/*"
+            ],
+            "js": [
+                "injection.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true
+        }
+    ],
+    "web_accessible_resources": [
+        "socketify.js"
+    ],
+    "manifest_version": 2
+}
