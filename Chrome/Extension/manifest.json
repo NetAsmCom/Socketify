@@ -1,7 +1,7 @@
 {
     "name": "Socketify",
-    "description": "Raw TCP & UDP Sockets",
-    "version": "1.0.0",
+    "description": "Raw TCP & UDP Sockets API",
+    "version": "1.0",
     "browser_action": {
         "default_popup": "popup.html",
         "default_icon": "icon.png"
@@ -24,7 +24,7 @@
                 "*://*/*"
             ],
             "js": [
-                "injection.js"
+                "injected.js"
             ],
             "run_at": "document_start",
             "all_frames": true
