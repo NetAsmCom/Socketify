@@ -1,4 +1,4 @@
-var elem = document.createElement("script");
-elem.src = chrome.extension.getURL("socketify.js");
-elem.async = false;
-document.documentElement.appendChild(elem);
+// Inject Socketify API
+var script = document.createElement("script");
+script.src = chrome.extension.getURL("socketify.js");
+document.documentElement.appendChild(script);
