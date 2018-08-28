@@ -40,7 +40,39 @@ window.socketify = {
             }
         });
     },
-    tcpClient: function (endPoint, callback) { },
+    tcpClient: function (endPoint, callback) {
+        var id = uuidv4();
+        socketify._sockets[id] = {
+            _id: id,
+            _onOpen: callback,
+            connect: function (endPoint, callback) {
+                socketify._sockets[id]._onConnect = callback;
+                socketify._sendMessage({
+                    _info: {
+                        command: "tcpClient-connect",
+                        id: id,
+                        endPoint: endPoint
+                    }
+                });
+            },
+            onClose: function () { /* Unhandled - User should override n*/ },
+            close: function () {
+                socketify._sendMessage({
+                    _info: {
+                        command: "tcpClient-close",
+                        id: id
+                    }
+                });
+            }
+        };
+        socketify._sendMessage({
+            _info: {
+                command: "tcpClient-open",
+                id: id,
+                endPoint: endPoint
+            }
+        });
+    },
     udpPeer: function (endPoint, callback) {
         var id = uuidv4();
         socketify._sockets[id] = {
