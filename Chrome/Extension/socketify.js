@@ -13,7 +13,20 @@ window.socketify = {
     },
     _onMessage: function (message) {
         switch (message._info.command) {
-            // TODO
+            case "tcpServer-opened": {
+            } break;
+            case "tcpServer-closed": {
+            } break;
+            case "tcpClient-opened": {
+            } break;
+            case "tcpClient-closed": {
+            } break;
+            case "udpPeer-opened": {
+            } break;
+            case "udpPeer-received": {
+            } break;
+            case "udpPeer-closed": {
+            } break;
         }
     },
     tcpServer: function (endPoint, callback) {
