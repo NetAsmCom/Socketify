@@ -8,28 +8,52 @@ window.uuidv4 = function () {
 window.socketify = {
     _sockets: {},
     _sendMessage: function (message) {
-        message.type = "socketify-out";
+        message._type = "socketify-out";
         window.postMessage(message, "*");
     },
     _onMessage: function (message) {
-        // TODO
+        switch (message._info.command) {
+            // TODO
+        }
     },
     tcpServer: function (endPoint, callback) { },
     tcpClient: function (endPoint, callback) { },
     udpPeer: function (endPoint, callback) {
         var id = uuidv4();
-        var socket = {
-            type: "udpPeer",
-            id: id,
-            onCreate: callback
+        socketify._sockets[id] = {
+            _id: id,
+            _onOpen: callback,
+            onMessage: function (sender, message) { },
+            onClose: function () { },
+            sendMessage: function (target, message) {
+                message._info = {
+                    command: "udpPeer-send",
+                    id: id,
+                    target: target
+                };
+                socketify._sendMessage(message);
+            },
+            close: function () {
+                socketify._sendMessage({
+                    _info: {
+                        command: "udpPeer-close",
+                        id: id
+                    }
+                });
+            }
         };
-
-        this._sockets[id] = socket;
+        socketify._sendMessage({
+            _info: {
+                command: "udpPeer-open",
+                id: id,
+                endPoint: endPoint
+            }
+        });
     }
 };
 
 window.addEventListener("message", function (event) {
-    if (event.source === window || event.data.type === "socketify-in") {
+    if (event.source === window || event.data._type === "socketify-in") {
         window.socketify._onMessage(event.data);
     }
 }, false);
