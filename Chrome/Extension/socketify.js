@@ -16,15 +16,38 @@ window.socketify = {
             // TODO
         }
     },
-    tcpServer: function (endPoint, callback) { },
+    tcpServer: function (endPoint, callback) {
+        var id = uuidv4();
+        socketify._sockets[id] = {
+            _id: id,
+            _onOpen: callback,
+            onConnect: function (connection) { /* Unhandled - User should override n*/ },
+            onClose: function () { /* Unhandled - User should override n*/ },
+            close: function () {
+                socketify._sendMessage({
+                    _info: {
+                        command: "tcpServer-close",
+                        id: id
+                    }
+                });
+            }
+        };
+        socketify._sendMessage({
+            _info: {
+                command: "tcpServer-open",
+                id: id,
+                endPoint: endPoint
+            }
+        });
+    },
     tcpClient: function (endPoint, callback) { },
     udpPeer: function (endPoint, callback) {
         var id = uuidv4();
         socketify._sockets[id] = {
             _id: id,
             _onOpen: callback,
-            onMessage: function (sender, message) { },
-            onClose: function () { },
+            onMessage: function (sender, message) { /* Unhandled - User should override */ },
+            onClose: function () { /* Unhandled - User should override n*/ },
             sendMessage: function (target, message) {
                 message._info = {
                     command: "udpPeer-send",
