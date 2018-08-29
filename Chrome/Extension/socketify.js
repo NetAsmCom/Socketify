@@ -17,16 +17,28 @@ window.socketify = {
         switch (message._info.command) {
             case "tcpServer-opened": {
             } break;
+            // TODO: other tcpServer events
             case "tcpServer-closed": {
             } break;
             case "tcpClient-opened": {
+                if (message._info.success) {
+                    socket._onOpen(socket, undefined);
+                }
+                else {
+                    socket._onOpen(undefined, message._info.error);
+                    delete socketify._sockets[id];
+                }
             } break;
+            // TODO: other tcpClient events
             case "tcpClient-closed": {
+                socket.onClose();
+                delete socketify._sockets[id];
             } break;
             case "udpPeer-opened": {
                 if (message._info.success) {
                     socket._onOpen(socket, undefined);
-                } else {
+                }
+                else {
                     socket._onOpen(undefined, message._info.error);
                     delete socketify._sockets[id];
                 }
