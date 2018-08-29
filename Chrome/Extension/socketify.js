@@ -16,9 +16,18 @@ window.socketify = {
         var socket = socketify._sockets[id];
         switch (message._info.command) {
             case "tcpServer-opened": {
+                if (message._info.success) {
+                    socket._onOpen(socket, undefined);
+                }
+                else {
+                    socket._onOpen(undefined, message._info.error);
+                    delete socketify._sockets[id];
+                }
             } break;
             // TODO: other tcpServer events
             case "tcpServer-closed": {
+                socket.onClose();
+                delete socketify._sockets[id];
             } break;
             case "tcpClient-opened": {
                 if (message._info.success) {
