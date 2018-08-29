@@ -12,6 +12,8 @@ window.socketify = {
         window.postMessage(message, "*");
     },
     _onMessage: function (message) {
+        var id = message._info.id;
+        var socket = socketify._sockets[id];
         switch (message._info.command) {
             case "tcpServer-opened": {
             } break;
@@ -22,10 +24,19 @@ window.socketify = {
             case "tcpClient-closed": {
             } break;
             case "udpPeer-opened": {
+                if (message._info.success) {
+                    socket._onOpen(socket, undefined);
+                } else {
+                    socket._onOpen(undefined, message._info.error);
+                    delete socketify._sockets[id];
+                }
             } break;
             case "udpPeer-received": {
+                socket.onMessage(message._info.sender, message);
             } break;
             case "udpPeer-closed": {
+                socket.onClose();
+                delete socketify._sockets[id];
             } break;
         }
     },
