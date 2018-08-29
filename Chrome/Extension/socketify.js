@@ -5,6 +5,7 @@ window.uuidv4 = function () {
     });
 };
 
+// Expose Socketify API
 window.socketify = {
     _sockets: {},
     _sendMessage: function (message) {
@@ -152,8 +153,9 @@ window.socketify = {
     }
 };
 
+// Handle Content Messages
 window.addEventListener("message", function (event) {
-    if (event.source === window || event.data._type === "socketify-in") {
+    if (event.source === window && event.data._type === "socketify-in") {
         window.socketify._onMessage(event.data);
     }
 }, false);
