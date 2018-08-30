@@ -1,3 +1,4 @@
+// Expose UUIDv4 API
 window.uuidv4 = function () {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -8,154 +9,72 @@ window.uuidv4 = function () {
 // Expose Socketify API
 window.socketify = {
     _sockets: {},
-    _sendMessage: function (message) {
-        message._type = "socketify-out";
-        window.postMessage(message, "*");
+    _sendMessage: function (info, payload) {
+        info.type = "socketify-out";
+        window.postMessage({
+            _info: info,
+            _payload: payload
+        }, "*");
     },
-    _onMessage: function (message) {
-        var id = message._info.id;
+    _onMessage: function (info, payload) {
+        var id = info.id;
         var socket = socketify._sockets[id];
-        switch (message._info.command) {
-            case "tcpServer-opened": {
-                if (message._info.success) {
+        switch (info.command) {
+            // TODO: Handle other events?
+            case "open": {
+                if (info.result.success) {
+                    socket.endPoint = info.endPoint;
                     socket._onOpen(socket, undefined);
-                }
-                else {
-                    socket._onOpen(undefined, message._info.error);
+                } else {
+                    socket._onOpen(undefined, info.result.error);
                     delete socketify._sockets[id];
                 }
             } break;
-            // TODO: other tcpServer events
-            case "tcpServer-closed": {
-                socket.onClose();
-                delete socketify._sockets[id];
-            } break;
-            case "tcpClient-opened": {
-                if (message._info.success) {
-                    socket._onOpen(socket, undefined);
-                }
-                else {
-                    socket._onOpen(undefined, message._info.error);
-                    delete socketify._sockets[id];
-                }
-            } break;
-            // TODO: other tcpClient events
-            case "tcpClient-closed": {
-                socket.onClose();
-                delete socketify._sockets[id];
-            } break;
-            case "udpPeer-opened": {
-                if (message._info.success) {
-                    socket._onOpen(socket, undefined);
-                }
-                else {
-                    socket._onOpen(undefined, message._info.error);
-                    delete socketify._sockets[id];
-                }
-            } break;
-            case "udpPeer-received": {
-                socket.onMessage(message._info.sender, message);
-            } break;
-            case "udpPeer-closed": {
-                socket.onClose();
+            case "close": {
+                socket.onClose(info.result.error);
                 delete socketify._sockets[id];
             } break;
         }
     },
     tcpServer: function (endPoint, callback) {
-        var id = uuidv4();
-        socketify._sockets[id] = {
-            _id: id,
-            _onOpen: callback,
-            onConnect: function (connection) { /* Unhandled - User should override n*/ },
-            onClose: function () { /* Unhandled - User should override n*/ },
-            close: function () {
-                socketify._sendMessage({
-                    _info: {
-                        command: "tcpServer-close",
-                        id: id
-                    }
-                });
-            }
-        };
-        socketify._sendMessage({
-            _info: {
-                command: "tcpServer-open",
-                id: id,
-                endPoint: endPoint
-            }
-        });
+        // TODO
     },
     tcpClient: function (endPoint, callback) {
-        var id = uuidv4();
-        socketify._sockets[id] = {
-            _id: id,
-            _onOpen: callback,
-            connect: function (endPoint, callback) {
-                socketify._sockets[id]._onConnect = callback;
-                socketify._sendMessage({
-                    _info: {
-                        command: "tcpClient-connect",
-                        id: id,
-                        endPoint: endPoint
-                    }
-                });
-            },
-            onClose: function () { /* Unhandled - User should override n*/ },
-            close: function () {
-                socketify._sendMessage({
-                    _info: {
-                        command: "tcpClient-close",
-                        id: id
-                    }
-                });
-            }
-        };
-        socketify._sendMessage({
-            _info: {
-                command: "tcpClient-open",
-                id: id,
-                endPoint: endPoint
-            }
-        });
+        // TODO
     },
     udpPeer: function (endPoint, callback) {
         var id = uuidv4();
         socketify._sockets[id] = {
-            _id: id,
+            id: id,
+            endPoint: endPoint,
             _onOpen: callback,
-            onMessage: function (sender, message) { /* Unhandled - User should override */ },
-            onClose: function () { /* Unhandled - User should override n*/ },
+            onMessage: function (sender, message) { /* Unhandled - User should override! */ },
+            onClose: function (error) { /* Unhandled - User should override! */ },
             sendMessage: function (target, message) {
-                message._info = {
-                    command: "udpPeer-send",
+                socketify._sendMessage({
+                    command: "send",
                     id: id,
-                    target: target
-                };
-                socketify._sendMessage(message);
+                    endPoint: target
+                }, message);
             },
             close: function () {
                 socketify._sendMessage({
-                    _info: {
-                        command: "udpPeer-close",
-                        id: id
-                    }
-                });
+                    command: "close",
+                    id: id
+                }, undefined);
             }
         };
         socketify._sendMessage({
-            _info: {
-                command: "udpPeer-open",
-                id: id,
-                endPoint: endPoint
-            }
-        });
+            command: "udpPeer-open",
+            id: id,
+            endPoint: endPoint
+        }, undefined);
     }
 };
 
 // Handle Content Messages
 window.addEventListener("message", function (event) {
-    if (event.source === window && event.data._type === "socketify-in") {
-        window.socketify._onMessage(event.data);
+    if (event.source === window && event.data._info.type === "socketify-in") {
+        window.socketify._onMessage(event.data._info, event.data._payload);
     }
 }, false);
