@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+var tcpServerClosed = false
 var tcpServerSocket *net.TCPListener
 var tcpServerConnections = make(map[string]*net.TCPConn)
 
@@ -41,11 +42,14 @@ func tcpServer(addrStr string) {
 		msg := read()
 		switch msg.Event {
 		case "error":
-			write(message{
-				Event: "close",
-				Error: msg.Error,
-				Debug: msg.Debug,
-			})
+			if !tcpServerClosed {
+				write(message{
+					Event: "close",
+					Error: msg.Error,
+					Debug: msg.Debug,
+				})
+				tcpServerClosed = true
+			}
 			os.Exit(1)
 			break
 		case "send":
@@ -55,9 +59,12 @@ func tcpServer(addrStr string) {
 			tcpServerDrop(msg.Address, "", "")
 			break
 		case "close":
-			write(message{
-				Event: "close",
-			})
+			if !tcpServerClosed {
+				write(message{
+					Event: "close",
+				})
+				tcpServerClosed = true
+			}
 			tcpServerSocket.Close()
 			os.Exit(0)
 			break
@@ -69,11 +76,14 @@ func tcpServerAccept() {
 	for {
 		connection, error := tcpServerSocket.AcceptTCP()
 		if error != nil {
-			write(message{
-				Event: "close",
-				Error: "cannot accept tcp connection",
-				Debug: error.Error(),
-			})
+			if !tcpServerClosed {
+				write(message{
+					Event: "close",
+					Error: "cannot accept tcp connection",
+					Debug: error.Error(),
+				})
+				tcpServerClosed = true
+			}
 			os.Exit(1)
 		}
 

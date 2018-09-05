@@ -46,8 +46,8 @@ func udpPeer(addrStr string) {
 					Error: msg.Error,
 					Debug: msg.Debug,
 				})
+				udpPeerClosed = true
 			}
-			udpPeerClosed = true
 			os.Exit(1)
 			break
 		case "send":
@@ -58,9 +58,9 @@ func udpPeer(addrStr string) {
 				write(message{
 					Event: "close",
 				})
-				udpPeerSocket.Close()
+				udpPeerClosed = true
 			}
-			udpPeerClosed = true
+			udpPeerSocket.Close()
 			os.Exit(0)
 			break
 		}
@@ -85,8 +85,8 @@ func udpPeerSend(msg message) {
 				Error: "cannot write to udp socket",
 				Debug: error.Error(),
 			})
+			udpPeerClosed = true
 		}
-		udpPeerClosed = true
 		os.Exit(1)
 	}
 }
@@ -102,8 +102,8 @@ func udpPeerReceive() {
 					Error: "cannot read from udp socket",
 					Debug: error.Error(),
 				})
+				udpPeerClosed = true
 			}
-			udpPeerClosed = true
 			os.Exit(1)
 		}
 

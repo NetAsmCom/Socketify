@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+var tcpClientClosed = false
 var tcpClientSocket *net.TCPConn
 
 func tcpClient(addrStr string) {
@@ -40,20 +41,26 @@ func tcpClient(addrStr string) {
 		msg := read()
 		switch msg.Event {
 		case "error":
-			write(message{
-				Event: "close",
-				Error: msg.Error,
-				Debug: msg.Debug,
-			})
+			if !tcpClientClosed {
+				write(message{
+					Event: "close",
+					Error: msg.Error,
+					Debug: msg.Debug,
+				})
+				tcpClientClosed = true
+			}
 			os.Exit(1)
 			break
 		case "send":
 			tcpClientSend(msg)
 			break
 		case "close":
-			write(message{
-				Event: "close",
-			})
+			if !tcpClientClosed {
+				write(message{
+					Event: "close",
+				})
+				tcpClientClosed = true
+			}
 			tcpClientSocket.Close()
 			os.Exit(0)
 			break
@@ -64,11 +71,14 @@ func tcpClient(addrStr string) {
 func tcpClientSend(msg message) {
 	_, error := tcpClientSocket.Write([]byte(msg.Payload))
 	if error != nil {
-		write(message{
-			Event: "close",
-			Error: "cannot write to tcp socket",
-			Debug: error.Error(),
-		})
+		if !tcpClientClosed {
+			write(message{
+				Event: "close",
+				Error: "cannot write to tcp socket",
+				Debug: error.Error(),
+			})
+			tcpClientClosed = true
+		}
 		os.Exit(1)
 	}
 }
@@ -79,18 +89,24 @@ func tcpClientReceive() {
 		length, error := tcpClientSocket.Read(buffer)
 		if error != nil {
 			if error == io.EOF {
-				write(message{
-					Event: "close",
-					Error: "connection closed",
-					Debug: error.Error(),
-				})
+				if !tcpClientClosed {
+					write(message{
+						Event: "close",
+						Error: "connection closed",
+						Debug: error.Error(),
+					})
+					tcpClientClosed = true
+				}
 				os.Exit(0)
 			} else {
-				write(message{
-					Event: "close",
-					Error: "cannot read from tcp socket",
-					Debug: error.Error(),
-				})
+				if !tcpClientClosed {
+					write(message{
+						Event: "close",
+						Error: "cannot read from tcp socket",
+						Debug: error.Error(),
+					})
+					tcpClientClosed = true
+				}
 				os.Exit(1)
 			}
 		}
