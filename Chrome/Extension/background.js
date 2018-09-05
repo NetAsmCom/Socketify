@@ -1,11 +1,6 @@
 var messengerPorts = {};
 
-chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
-    var tabPorts = messengerPorts[tabId];
-    if (!tabPorts) {
-        return;
-    }
-
+function disconnectTabPorts(tabPorts) {
     for (var id in tabPorts) {
         var port = tabPorts[id];
         if (!port) {
@@ -13,8 +8,17 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
         }
 
         port.disconnect();
+        delete tabPorts[id];
+    }
+}
+
+chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
+    var tabPorts = messengerPorts[tabId];
+    if (!tabPorts) {
+        return;
     }
 
+    disconnectTabPorts(tabPorts);
     delete messengerPorts[tabId];
 });
 
@@ -29,6 +33,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (!tabPorts) {
         tabPorts = {};
         messengerPorts[tabId] = tabPorts;
+    } else if (message.init) {
+        disconnectTabPorts(tabPorts);
     }
 
     var id = message.id;

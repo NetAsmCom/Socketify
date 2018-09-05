@@ -31,7 +31,6 @@ window.socketify = {
             return;
         }
 
-        // TODO: handle tcpServer, tcpClient
         switch (msg.event) {
             case "open": {
                 var openHandler = socket._handlers.onOpen;
@@ -39,10 +38,26 @@ window.socketify = {
                     openHandler(msg.address);
                 }
             } return;
+            case "connect": {
+                var connectHandler = socket._handlers.onConnect;
+                if (connectHandler && socket._id[0] === 's') {
+                    connectHandler(msg.address);
+                }
+            } return;
             case "receive": {
                 var receiveHandler = socket._handlers.onReceive;
                 if (receiveHandler) {
-                    receiveHandler(msg.address, msg.payload);
+                    if (socket._id[0] === 'c') {
+                        receiveHandler(msg.payload);
+                    } else {
+                        receiveHandler(msg.address, msg.payload);
+                    }
+                }
+            } return;
+            case "disconnect": {
+                var disconnectHandler = socket._handlers.onDisconnect;
+                if (disconnectHandler && socket._id[0] === 's') {
+                    disconnectHandler(msg.address, msg.error);
                 }
             } return;
             case "close": {
@@ -57,13 +72,44 @@ window.socketify = {
         var id = `s-${uuidv4()}`;
         var socket = {
             _id: id,
-            _handlers: handlers, // onOpen, onConnect, onReceive, onDisconnect, onClose
-            close: function () { }
+            _handlers: handlers, // onOpen(addr), onConnect(addr), onReceive(addr, msg), onDisconnect(addr, err), onClose(err)
+            send: function (target, message) {
+                socketify._post({
+                    id: id,
+                    _msg: {
+                        event: "send",
+                        address: target,
+                        payload: message
+                    }
+                });
+            },
+            drop: function (target) {
+                socketify._post({
+                    id: id,
+                    _msg: {
+                        event: "drop",
+                        address: target
+                    }
+                });
+            },
+            close: function () {
+                socketify._post({
+                    id: id,
+                    _msg: {
+                        event: "close"
+                    }
+                });
+            }
         };
 
         socketify._sockets[id] = socket;
-
-        // TODO: _post(open-tcpServer)
+        socketify._post({
+            id: id,
+            _msg: {
+                event: "open-tcpServer",
+                address: address
+            }
+        });
 
         return socket;
     },
@@ -71,14 +117,34 @@ window.socketify = {
         var id = `c-${uuidv4()}`;
         var socket = {
             _id: id,
-            _handlers: handlers, // onOpen, onReceive, onClose
-            send: function (message) { },
-            close: function () { }
+            _handlers: handlers, // onOpen(addr), onReceive(msg), onClose(err)
+            send: function (message) {
+                socketify._post({
+                    id: id,
+                    _msg: {
+                        event: "send",
+                        payload: message
+                    }
+                });
+            },
+            close: function () {
+                socketify._post({
+                    id: id,
+                    _msg: {
+                        event: "close"
+                    }
+                });
+            }
         };
 
         socketify._sockets[id] = socket;
-
-        // TODO: _post(open-tcpClient)
+        socketify._post({
+            id: id,
+            _msg: {
+                event: "open-tcpClient",
+                address: address
+            }
+        });
 
         return socket;
     },
@@ -86,7 +152,7 @@ window.socketify = {
         var id = `p-${uuidv4()}`;
         var socket = {
             _id: id,
-            _handlers: handlers, // onOpen, onReceive, onClose
+            _handlers: handlers, // onOpen(addr), onReceive(addr, msg), onClose(err)
             send: function (target, message) {
                 socketify._post({
                     id: id,

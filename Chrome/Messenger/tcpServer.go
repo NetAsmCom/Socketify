@@ -6,11 +6,6 @@ import (
 	"os"
 )
 
-type tcpServerConn struct {
-	closed bool
-	socket *net.TCPConn
-}
-
 var tcpServerClosed = false
 var tcpServerSocket *net.TCPListener
 var tcpServerConnections = make(map[string]*net.TCPConn)
