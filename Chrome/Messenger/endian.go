@@ -15,9 +15,7 @@ func isLittleEndian() bool {
 	return !isBigEndian()
 }
 
-func getNativeEndian() binary.ByteOrder {
-	if isBigEndian() {
-		return binary.BigEndian
-	}
-	return binary.LittleEndian
-}
+var nativeEndian = map[bool]binary.ByteOrder{
+	true:  binary.BigEndian,
+	false: binary.LittleEndian,
+}[isBigEndian()]
