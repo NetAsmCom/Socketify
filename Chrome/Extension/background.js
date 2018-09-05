@@ -8,7 +8,7 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
 
     for (var id in tabPorts) {
         var port = tabPorts[id];
-        if (port) {
+        if (!port) {
             continue;
         }
 

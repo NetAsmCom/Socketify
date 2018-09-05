@@ -53,7 +53,7 @@ func main() {
 	init := read()
 	if init.Event == "error" {
 		write(message{
-			Event: "open",
+			Event: "close",
 			Error: init.Error,
 			Debug: init.Debug,
 		})
@@ -72,7 +72,7 @@ func main() {
 		break
 	default:
 		write(message{
-			Event: "open",
+			Event: "close",
 			Error: "unknown socket type",
 		})
 		os.Exit(1)

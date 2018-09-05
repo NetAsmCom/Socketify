@@ -36,7 +36,7 @@ window.socketify = {
             case "open": {
                 var openHandler = socket._handlers.onOpen;
                 if (openHandler) {
-                    openHandler(msg.address, msg.error);
+                    openHandler(msg.address);
                 }
             } return;
             case "receive": {

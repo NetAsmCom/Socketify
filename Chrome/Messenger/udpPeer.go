@@ -12,7 +12,7 @@ func udpPeer(addrStr string) {
 	address, error := net.ResolveUDPAddr("udp", addrStr)
 	if error != nil {
 		write(message{
-			Event: "open",
+			Event: "close",
 			Error: "cannot resolve udp address",
 			Debug: error.Error(),
 		})
@@ -22,7 +22,7 @@ func udpPeer(addrStr string) {
 	udpPeerSocket, error = net.ListenUDP("udp", address)
 	if error != nil {
 		write(message{
-			Event: "open",
+			Event: "close",
 			Error: "cannot open udp socket",
 			Debug: error.Error(),
 		})

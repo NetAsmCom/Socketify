@@ -19,7 +19,7 @@ func tcpServer(addrStr string) {
 	address, error := net.ResolveTCPAddr("tcp", addrStr)
 	if error != nil {
 		write(message{
-			Event: "open",
+			Event: "close",
 			Error: "cannot resolve tcp address",
 			Debug: error.Error(),
 		})
@@ -29,7 +29,7 @@ func tcpServer(addrStr string) {
 	tcpServerSocket, error = net.ListenTCP("tcp", address)
 	if error != nil {
 		write(message{
-			Event: "open",
+			Event: "close",
 			Error: "cannot listen tcp socket",
 			Debug: error.Error(),
 		})

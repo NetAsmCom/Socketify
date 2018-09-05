@@ -13,7 +13,7 @@ func tcpClient(addrStr string) {
 	address, error := net.ResolveTCPAddr("tcp", addrStr)
 	if error != nil {
 		write(message{
-			Event: "open",
+			Event: "close",
 			Error: "cannot resolve tcp address",
 			Debug: error.Error(),
 		})
@@ -23,7 +23,7 @@ func tcpClient(addrStr string) {
 	tcpClientSocket, error = net.DialTCP("tcp", nil, address)
 	if error != nil {
 		write(message{
-			Event: "open",
+			Event: "close",
 			Error: "cannot connect tcp socket",
 			Debug: error.Error(),
 		})
