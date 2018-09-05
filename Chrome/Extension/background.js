@@ -1,5 +1,13 @@
 var messengerPorts = {};
 
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+    if (changeInfo.status !== "complete" || !tab.url.startsWith("file:///")) {
+        return;
+    }
+
+    chrome.tabs.executeScript(tabId, { file: "content.js" });
+});
+
 function disconnectTabPorts(tabPorts) {
     for (var id in tabPorts) {
         var port = tabPorts[id];

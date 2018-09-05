@@ -15,7 +15,8 @@
     "permissions": [
         "nativeMessaging",
         "tabs",
-        "*://*/*"
+        "*://*/*",
+        "<all_urls>"
     ],
     "content_scripts": [
         {
