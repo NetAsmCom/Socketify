@@ -65,10 +65,10 @@ func main() {
 		udpPeer(init.Address)
 		break
 	case "open-tcpServer":
-		// TODO
+		tcpServer(init.Address)
 		break
 	case "open-tcpClient":
-		// TODO
+		tcpClient(init.Address)
 		break
 	default:
 		write(message{

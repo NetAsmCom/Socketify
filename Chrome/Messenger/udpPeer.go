@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+var udpPeerClosed = false
 var udpPeerSocket *net.UDPConn
 
 func udpPeer(addrStr string) {
@@ -39,21 +40,27 @@ func udpPeer(addrStr string) {
 		msg := read()
 		switch msg.Event {
 		case "error":
-			write(message{
-				Event: "close",
-				Error: msg.Error,
-				Debug: msg.Debug,
-			})
+			if !udpPeerClosed {
+				write(message{
+					Event: "close",
+					Error: msg.Error,
+					Debug: msg.Debug,
+				})
+			}
+			udpPeerClosed = true
 			os.Exit(1)
 			break
 		case "send":
 			udpPeerSend(msg)
 			break
 		case "close":
-			write(message{
-				Event: "close",
-			})
-			udpPeerSocket.Close()
+			if !udpPeerClosed {
+				write(message{
+					Event: "close",
+				})
+				udpPeerSocket.Close()
+			}
+			udpPeerClosed = true
 			os.Exit(0)
 			break
 		}
@@ -72,30 +79,31 @@ func udpPeerSend(msg message) {
 
 	_, error = udpPeerSocket.WriteToUDP([]byte(msg.Payload), address)
 	if error != nil {
-		write(message{
-			Event: "close",
-			Error: "cannot write to udp socket",
-			Debug: error.Error(),
-		})
+		if !udpPeerClosed {
+			write(message{
+				Event: "close",
+				Error: "cannot write to udp socket",
+				Debug: error.Error(),
+			})
+		}
+		udpPeerClosed = true
 		os.Exit(1)
 	}
 }
 
 func udpPeerReceive() {
-	buffer := make([]byte, 1500)
-
-	var length int
-	var address *net.UDPAddr
-	var error error
-
 	for {
-		length, address, error = udpPeerSocket.ReadFromUDP(buffer)
+		buffer := make([]byte, 1500)
+		length, address, error := udpPeerSocket.ReadFromUDP(buffer)
 		if error != nil {
-			write(message{
-				Event: "close",
-				Error: "cannot read from udp socket",
-				Debug: error.Error(),
-			})
+			if !udpPeerClosed {
+				write(message{
+					Event: "close",
+					Error: "cannot read from udp socket",
+					Debug: error.Error(),
+				})
+			}
+			udpPeerClosed = true
 			os.Exit(1)
 		}
 
