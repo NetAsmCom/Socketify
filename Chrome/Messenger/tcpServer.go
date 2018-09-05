@@ -6,6 +6,11 @@ import (
 	"os"
 )
 
+type tcpServerConn struct {
+	closed bool
+	socket *net.TCPConn
+}
+
 var tcpServerClosed = false
 var tcpServerSocket *net.TCPListener
 var tcpServerConnections = make(map[string]*net.TCPConn)
@@ -137,12 +142,13 @@ func tcpServerDrop(addrStr string, error string, debug string) {
 		return
 	}
 
-	conn.Close()
-	delete(tcpServerConnections, addrStr)
 	write(message{
 		Event:   "disconnect",
 		Address: addrStr,
 		Error:   error,
 		Debug:   debug,
 	})
+
+	delete(tcpServerConnections, addrStr)
+	conn.Close()
 }
