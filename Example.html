@@ -21,6 +21,20 @@
             height: 100%;
         }
 
+        #unavailable {
+            display: none;
+            height: 100%;
+        }
+
+        #unavailable div {
+            margin-top: calc(50% - 32px);
+            height: 64px;
+            line-height: 64px;
+            font-size: 24px;
+            color: red;
+            text-align: center;
+        }
+
         #page {
             margin: auto;
             padding: 32px;
@@ -34,16 +48,15 @@
 
         #type a {
             display: inline-block;
-            margin-right: 24px;
-            font-size: 20px;
+            margin-right: 32px;
+            font-size: 32px;
             color: gray;
             cursor: pointer;
             vertical-align: bottom;
         }
 
         #type .active {
-            font-size: 32px;
-            font-weight: bold;
+            box-shadow: 0 2px 0 black;
             color: black;
         }
 
@@ -63,7 +76,7 @@
             padding: 0 16px;
             width: calc(100% - 416px);
             font-size: 16px;
-            border: 1px solid black;
+            border: 2px solid black;
         }
 
         #events button {
@@ -108,24 +121,212 @@
             border-left: 1px solid gray;
         }
     </style>
-    <script></script>
+    <script>
+        var udpPeerElem = undefined;
+        var tcpClientElem = undefined;
+        var tcpServerElem = undefined;
+
+        var inputElem = undefined;
+
+        function init() {
+            console.log(`init()`);
+
+            udpPeerElem = document.getElementById("udpPeer");
+            tcpClientElem = document.getElementById("tcpClient");
+            tcpServerElem = document.getElementById("tcpServer");
+
+            inputElem = document.getElementById("input");
+        }
+
+        var udpPeer = undefined;
+        var tcpClient = undefined;
+        var tcpServer = undefined;
+
+        var activeType = "udpPeer";
+
+        function switchTo(type) {
+            console.log(`switchTo(${type}) - activeType: ${activeType}`);
+
+            if (type === activeType) {
+                return;
+            }
+
+            switch (type) {
+                case "udpPeer": {
+                    activeType = type;
+
+                    if (tcpClient) {
+                        tcpClient.close();
+                        tcpClient = undefined;
+                    }
+                    if (tcpServer) {
+                        tcpServer.close();
+                        tcpServer = undefined;
+                    }
+
+                    udpPeerElem.className = "active";
+                    tcpClientElem.className = "";
+                    tcpServerElem.className = "";
+                } break;
+                case "tcpClient": {
+                    activeType = type;
+
+                    if (udpPeer) {
+                        udpPeer.close();
+                        udpPeer = undefined;
+                    }
+                    if (tcpServer) {
+                        tcpServer.close();
+                        tcpServer = undefined;
+                    }
+
+                    udpPeerElem.className = "";
+                    tcpClientElem.className = "active";
+                    tcpServerElem.className = "";
+                } break;
+                case "tcpServer": {
+                    activeType = type;
+
+                    if (udpPeer) {
+                        udpPeer.close();
+                        udpPeer = undefined;
+                    }
+                    if (tcpClient) {
+                        tcpClient.close();
+                        tcpClient = undefined;
+                    }
+
+                    udpPeerElem.className = "";
+                    tcpClientElem.className = "";
+                    tcpServerElem.className = "active";
+                } break;
+            }
+
+            console.log(`~switchTo(${type}) - activeType: ${activeType}`);
+        }
+
+        function addLog(event, text, address) {
+            switch (activeType) {
+                case "udpPeer": {
+
+                } break;
+                case "tcpClient": {
+
+                } break;
+                case "tcpServer": {
+
+                } break;
+            }
+        }
+
+        function open() {
+            switch (activeType) {
+                case "udpPeer": {
+
+                } break;
+                case "tcpClient": {
+
+                } break;
+                case "tcpServer": {
+
+                } break;
+            }
+        }
+
+        function send() {
+            switch (activeType) {
+                case "udpPeer": {
+
+                } break;
+                case "tcpClient": {
+
+                } break;
+                case "tcpServer": {
+
+                } break;
+            }
+        }
+
+        function drop() {
+            switch (activeType) {
+                case "udpPeer": {
+
+                } break;
+                case "tcpClient": {
+
+                } break;
+                case "tcpServer": {
+
+                } break;
+            }
+        }
+
+        function close() {
+            switch (activeType) {
+                case "udpPeer": {
+
+                } break;
+                case "tcpClient": {
+
+                } break;
+                case "tcpServer": {
+
+                } break;
+            }
+        }
+    </script>
 </head>
 
-<body>
+<body onload="init()">
+    <div id="unavailable">
+        <div>Uh-oh! Socketify is unavailable :(</div>
+    </div>
     <div id="page">
         <div id="type">
-            <a id="udpPeer" class="active">UDP Peer</a>
-            <a id="tcpClient">TCP Client</a>
-            <a id="tcpServer">TCP Server</a>
+            <a id="udpPeer" onclick="switchTo('udpPeer')" class="active">UDP Peer</a>
+            <a id="tcpClient" onclick="switchTo('tcpClient')">TCP Client</a>
+            <a id="tcpServer" onclick="switchTo('tcpServer')">TCP Server</a>
         </div>
         <div id="events">
             <input id="input" maxlength="1500" placeholder="Input">
-            <button id="open">Open</button>
-            <button id="send">Send</button>
-            <button id="drop">Drop</button>
-            <button id="close">Close</button>
+            <button id="open" onclick="open()">Open</button>
+            <button id="send" onclick="send()">Send</button>
+            <button id="drop" onclick="drop()">Drop</button>
+            <button id="close" onclick="close()">Close</button>
         </div>
         <div id="logs">
+            <div><b>open &rarr; </b>bound to <i>&lt;127.0.0.1:9696&gt;</i></div>
+            <div><b>connect &rarr; </b>accepted <i>&lt;127.0.0.1:1234&gt;</i></div>
+            <div>
+                <b>receive &rarr; </b>message from <i>&lt;127.0.0.1:1234&gt;</i>
+                <div>{ msg: "Hey, I'm Client X!" }</div>
+            </div>
+            <div><b>disconnect &rarr; </b>dropped <i>&lt;127.0.0.1:1234&gt;</i> with error: <i>connection closed</i></div>
+            <div><b>close &rarr; </b>with error: <i>none</i></div>
+            <div><b>open &rarr; </b>bound to <i>&lt;127.0.0.1:9696&gt;</i></div>
+            <div><b>connect &rarr; </b>accepted <i>&lt;127.0.0.1:1234&gt;</i></div>
+            <div>
+                <b>receive &rarr; </b>message from <i>&lt;127.0.0.1:1234&gt;</i>
+                <div>{ msg: "Hey, I'm Client X!" }</div>
+            </div>
+            <div><b>disconnect &rarr; </b>dropped <i>&lt;127.0.0.1:1234&gt;</i> with error: <i>connection closed</i></div>
+            <div><b>close &rarr; </b>with error: <i>none</i></div>
+            <div><b>open &rarr; </b>bound to <i>&lt;127.0.0.1:9696&gt;</i></div>
+            <div><b>connect &rarr; </b>accepted <i>&lt;127.0.0.1:1234&gt;</i></div>
+            <div>
+                <b>receive &rarr; </b>message from <i>&lt;127.0.0.1:1234&gt;</i>
+                <div>{ msg: "Hey, I'm Client X!" }</div>
+            </div>
+            <div><b>disconnect &rarr; </b>dropped <i>&lt;127.0.0.1:1234&gt;</i> with error: <i>connection closed</i></div>
+            <div><b>close &rarr; </b>with error: <i>none</i></div>
+            <div><b>open &rarr; </b>bound to <i>&lt;127.0.0.1:9696&gt;</i></div>
+            <div><b>connect &rarr; </b>accepted <i>&lt;127.0.0.1:1234&gt;</i></div>
+            <div>
+                <b>receive &rarr; </b>message from <i>&lt;127.0.0.1:1234&gt;</i>
+                <div>{ msg: "Hey, I'm Client X!" }</div>
+            </div>
+            <div><b>disconnect &rarr; </b>dropped <i>&lt;127.0.0.1:1234&gt;</i> with error: <i>connection closed</i></div>
+            <div><b>close &rarr; </b>with error: <i>none</i></div>
             <div><b>open &rarr; </b>bound to <i>&lt;127.0.0.1:9696&gt;</i></div>
             <div><b>connect &rarr; </b>accepted <i>&lt;127.0.0.1:1234&gt;</i></div>
             <div>
