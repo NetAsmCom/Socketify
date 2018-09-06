@@ -10,7 +10,6 @@
             padding: 0;
             font-size: 0;
             box-sizing: border-box;
-            vertical-align: middle;
             border: 0;
             outline: 0;
             font-family: sans-serif;
@@ -23,19 +22,14 @@
 
         #unavailable {
             display: none;
-            height: 100%;
-        }
-
-        #unavailable div {
-            margin-top: calc(50% - 32px);
-            height: 64px;
-            line-height: 64px;
+            margin: 64px;
             font-size: 24px;
             color: red;
             text-align: center;
         }
 
         #page {
+            display: none;
             margin: auto;
             padding: 32px;
             max-width: 960px;
@@ -114,11 +108,37 @@
             margin-bottom: 16px;
         }
 
+        #logs div span {
+            display: inline-block;
+            font-size: 14px;
+            padding: 4px 8px;
+            margin-right: 8px;
+            color: #eee;
+            background: black;
+        }
+
+        #logs div b {
+            color: blue;
+        }
+
         #logs div div {
+            margin-top: 8px;
             margin-left: 24px;
             padding-left: 16px;
             font-size: 14px;
             border-left: 1px solid gray;
+        }
+
+        #logs .address {
+            color: green;
+        }
+
+        #logs .error {
+            color: red;
+        }
+
+        #logs .noError {
+            color: gray;
         }
     </style>
     <script>
@@ -128,14 +148,26 @@
 
         var inputElem = undefined;
 
+        var logsElem = undefined;
+
         function init() {
             console.log(`init()`);
+
+            setTimeout(function () {
+                if (window.socketify) {
+                    document.getElementById("page").style.display = "block";
+                } else {
+                    document.getElementById("unavailable").style.display = "block";
+                }
+            }, 1000);
 
             udpPeerElem = document.getElementById("udpPeer");
             tcpClientElem = document.getElementById("tcpClient");
             tcpServerElem = document.getElementById("tcpServer");
 
             inputElem = document.getElementById("input");
+
+            logsElem = document.getElementById("logs");
         }
 
         var udpPeer = undefined;
@@ -205,7 +237,24 @@
             console.log(`~switchTo(${type}) - activeType: ${activeType}`);
         }
 
-        function addLog(event, text, address) {
+        function getInput() {
+            var input = inputElem.value;
+            inputElem.value = "";
+            return input;
+        }
+
+        function escapeHTML(raw) {
+            return raw
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&apos;");
+        }
+
+        function addLog(event, message) {
+            console.log(`addLog():`, event, message);
+
             switch (activeType) {
                 case "udpPeer": {
 
@@ -219,7 +268,9 @@
             }
         }
 
-        function open() {
+        function openClick(input) {
+            console.log(`openCLick(${input})`);
+
             switch (activeType) {
                 case "udpPeer": {
 
@@ -233,7 +284,9 @@
             }
         }
 
-        function send() {
+        function sendClick(input) {
+            console.log(`sendClick(${input})`);
+
             switch (activeType) {
                 case "udpPeer": {
 
@@ -247,7 +300,9 @@
             }
         }
 
-        function drop() {
+        function dropClick(input) {
+            console.log(`dropClick(${input})`);
+
             switch (activeType) {
                 case "udpPeer": {
 
@@ -261,7 +316,9 @@
             }
         }
 
-        function close() {
+        function closeClick() {
+            console.log(`closeClick()`);
+
             switch (activeType) {
                 case "udpPeer": {
 
@@ -278,9 +335,7 @@
 </head>
 
 <body onload="init()">
-    <div id="unavailable">
-        <div>Uh-oh! Socketify is unavailable :(</div>
-    </div>
+    <div id="unavailable">Uh-oh! Socketify is unavailable :(</div>
     <div id="page">
         <div id="type">
             <a id="udpPeer" onclick="switchTo('udpPeer')" class="active">UDP Peer</a>
@@ -289,52 +344,66 @@
         </div>
         <div id="events">
             <input id="input" maxlength="1500" placeholder="Input">
-            <button id="open" onclick="open()">Open</button>
-            <button id="send" onclick="send()">Send</button>
-            <button id="drop" onclick="drop()">Drop</button>
-            <button id="close" onclick="close()">Close</button>
+            <button id="open" onclick="openClick(getInput())">Open</button>
+            <button id="send" onclick="sendClick(getInput())">Send</button>
+            <button id="drop" onclick="dropClick(getInput())">Drop</button>
+            <button id="close" onclick="closeClick(getInput())">Close</button>
         </div>
         <div id="logs">
-            <div><b>open &rarr; </b>bound to <i>&lt;127.0.0.1:9696&gt;</i></div>
-            <div><b>connect &rarr; </b>accepted <i>&lt;127.0.0.1:1234&gt;</i></div>
+            <div><span>udpPeer</span><b>open &rarr; </b>bound to <i class="address">&lt;127.0.0.1:9696&gt;</i></div>
+            <div><span>tcpServer</span><b>connect &rarr; </b>accepted <i class="address">&lt;127.0.0.1:1234&gt;</i></div>
             <div>
-                <b>receive &rarr; </b>message from <i>&lt;127.0.0.1:1234&gt;</i>
+                <span>tcpClient</span><b>receive &rarr; </b>message from <i class="address">&lt;127.0.0.1:1234&gt;</i>
                 <div>{ msg: "Hey, I'm Client X!" }</div>
             </div>
-            <div><b>disconnect &rarr; </b>dropped <i>&lt;127.0.0.1:1234&gt;</i> with error: <i>connection closed</i></div>
-            <div><b>close &rarr; </b>with error: <i>none</i></div>
-            <div><b>open &rarr; </b>bound to <i>&lt;127.0.0.1:9696&gt;</i></div>
-            <div><b>connect &rarr; </b>accepted <i>&lt;127.0.0.1:1234&gt;</i></div>
+            <div><span>udpPeer</span><b>disconnect &rarr; </b>dropped <i class="address">&lt;127.0.0.1:1234&gt;</i>
+                with error: <i class="error">connection closed</i></div>
+            <div><span>udpPeer</span><b>close &rarr; </b>with error: <i class="noError">none</i></div>
+            <div><span>udpPeer</span><b>open &rarr; </b>bound to <i class="address">&lt;127.0.0.1:9696&gt;</i></div>
+            <div><span>tcpServer</span><b>connect &rarr; </b>accepted <i class="address">&lt;127.0.0.1:1234&gt;</i></div>
             <div>
-                <b>receive &rarr; </b>message from <i>&lt;127.0.0.1:1234&gt;</i>
+                <span>tcpClient</span><b>receive &rarr; </b>message from <i class="address">&lt;127.0.0.1:1234&gt;</i>
                 <div>{ msg: "Hey, I'm Client X!" }</div>
             </div>
-            <div><b>disconnect &rarr; </b>dropped <i>&lt;127.0.0.1:1234&gt;</i> with error: <i>connection closed</i></div>
-            <div><b>close &rarr; </b>with error: <i>none</i></div>
-            <div><b>open &rarr; </b>bound to <i>&lt;127.0.0.1:9696&gt;</i></div>
-            <div><b>connect &rarr; </b>accepted <i>&lt;127.0.0.1:1234&gt;</i></div>
+            <div><span>udpPeer</span><b>disconnect &rarr; </b>dropped <i class="address">&lt;127.0.0.1:1234&gt;</i>
+                with error: <i class="error">connection closed</i></div>
+            <div><span>udpPeer</span><b>close &rarr; </b>with error: <i class="noError">none</i></div>
+            <div><span>udpPeer</span><b>open &rarr; </b>bound to <i class="address">&lt;127.0.0.1:9696&gt;</i></div>
+            <div><span>tcpServer</span><b>connect &rarr; </b>accepted <i class="address">&lt;127.0.0.1:1234&gt;</i></div>
             <div>
-                <b>receive &rarr; </b>message from <i>&lt;127.0.0.1:1234&gt;</i>
+                <span>tcpClient</span><b>receive &rarr; </b>message from <i class="address">&lt;127.0.0.1:1234&gt;</i>
                 <div>{ msg: "Hey, I'm Client X!" }</div>
             </div>
-            <div><b>disconnect &rarr; </b>dropped <i>&lt;127.0.0.1:1234&gt;</i> with error: <i>connection closed</i></div>
-            <div><b>close &rarr; </b>with error: <i>none</i></div>
-            <div><b>open &rarr; </b>bound to <i>&lt;127.0.0.1:9696&gt;</i></div>
-            <div><b>connect &rarr; </b>accepted <i>&lt;127.0.0.1:1234&gt;</i></div>
+            <div><span>udpPeer</span><b>disconnect &rarr; </b>dropped <i class="address">&lt;127.0.0.1:1234&gt;</i>
+                with error: <i class="error">connection closed</i></div>
+            <div><span>udpPeer</span><b>close &rarr; </b>with error: <i class="noError">none</i></div>
+            <div><span>udpPeer</span><b>open &rarr; </b>bound to <i class="address">&lt;127.0.0.1:9696&gt;</i></div>
+            <div><span>tcpServer</span><b>connect &rarr; </b>accepted <i class="address">&lt;127.0.0.1:1234&gt;</i></div>
             <div>
-                <b>receive &rarr; </b>message from <i>&lt;127.0.0.1:1234&gt;</i>
+                <span>tcpClient</span><b>receive &rarr; </b>message from <i class="address">&lt;127.0.0.1:1234&gt;</i>
                 <div>{ msg: "Hey, I'm Client X!" }</div>
             </div>
-            <div><b>disconnect &rarr; </b>dropped <i>&lt;127.0.0.1:1234&gt;</i> with error: <i>connection closed</i></div>
-            <div><b>close &rarr; </b>with error: <i>none</i></div>
-            <div><b>open &rarr; </b>bound to <i>&lt;127.0.0.1:9696&gt;</i></div>
-            <div><b>connect &rarr; </b>accepted <i>&lt;127.0.0.1:1234&gt;</i></div>
+            <div><span>udpPeer</span><b>disconnect &rarr; </b>dropped <i class="address">&lt;127.0.0.1:1234&gt;</i>
+                with error: <i class="error">connection closed</i></div>
+            <div><span>udpPeer</span><b>close &rarr; </b>with error: <i class="noError">none</i></div>
+            <div><span>udpPeer</span><b>open &rarr; </b>bound to <i class="address">&lt;127.0.0.1:9696&gt;</i></div>
+            <div><span>tcpServer</span><b>connect &rarr; </b>accepted <i class="address">&lt;127.0.0.1:1234&gt;</i></div>
             <div>
-                <b>receive &rarr; </b>message from <i>&lt;127.0.0.1:1234&gt;</i>
+                <span>tcpClient</span><b>receive &rarr; </b>message from <i class="address">&lt;127.0.0.1:1234&gt;</i>
                 <div>{ msg: "Hey, I'm Client X!" }</div>
             </div>
-            <div><b>disconnect &rarr; </b>dropped <i>&lt;127.0.0.1:1234&gt;</i> with error: <i>connection closed</i></div>
-            <div><b>close &rarr; </b>with error: <i>none</i></div>
+            <div><span>udpPeer</span><b>disconnect &rarr; </b>dropped <i class="address">&lt;127.0.0.1:1234&gt;</i>
+                with error: <i class="error">connection closed</i></div>
+            <div><span>udpPeer</span><b>close &rarr; </b>with error: <i class="noError">none</i></div>
+            <div><span>udpPeer</span><b>open &rarr; </b>bound to <i class="address">&lt;127.0.0.1:9696&gt;</i></div>
+            <div><span>tcpServer</span><b>connect &rarr; </b>accepted <i class="address">&lt;127.0.0.1:1234&gt;</i></div>
+            <div>
+                <span>tcpClient</span><b>receive &rarr; </b>message from <i class="address">&lt;127.0.0.1:1234&gt;</i>
+                <div>{ msg: "Hey, I'm Client X!" }</div>
+            </div>
+            <div><span>udpPeer</span><b>disconnect &rarr; </b>dropped <i class="address">&lt;127.0.0.1:1234&gt;</i>
+                with error: <i class="error">connection closed</i></div>
+            <div><span>udpPeer</span><b>close &rarr; </b>with error: <i class="noError">none</i></div>
         </div>
     </div>
 </body>
