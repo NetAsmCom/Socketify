@@ -100,45 +100,59 @@
             background: #eee;
         }
 
-        #logs * {
-            font-size: 16px;
-        }
-
         #logs div {
             margin-bottom: 16px;
         }
 
         #logs div span {
             display: inline-block;
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        #logs div span b {
+            font-size: 16px;
+        }
+
+        #logs div .type {
             font-size: 14px;
             padding: 4px 8px;
-            margin-right: 8px;
             color: #eee;
             background: black;
         }
 
-        #logs div b {
+        #logs div .outEvent {
+            font-weight: bold;
             color: blue;
         }
 
-        #logs div div {
-            margin-top: 8px;
-            margin-left: 24px;
-            padding-left: 16px;
-            font-size: 14px;
-            border-left: 1px solid gray;
-        }
-
-        #logs .address {
+        #logs div .inEvent {
+            font-weight: bold;
             color: green;
         }
 
-        #logs .error {
-            color: red;
+        #logs div .param {
+            color: black;
         }
 
-        #logs .noError {
-            color: gray;
+        #logs div .payload {
+            margin-top: 8px;
+            margin-left: 24px;
+            padding-left: 16px;
+            border-left: 1px solid gray;
+        }
+
+        #logs div .payload * {
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        #logs div .payload b {
+            display: block;
+        }
+
+        #logs div .payload .error {
+            color: red;
         }
     </style>
     <script>
@@ -159,7 +173,7 @@
                 } else {
                     document.getElementById("unavailable").style.display = "block";
                 }
-            }, 1000);
+            }, 100);
 
             udpPeerElem = document.getElementById("udpPeer");
             tcpClientElem = document.getElementById("tcpClient");
@@ -183,18 +197,11 @@
                 return;
             }
 
+            closeClick();
+
             switch (type) {
                 case "udpPeer": {
                     activeType = type;
-
-                    if (tcpClient) {
-                        tcpClient.close();
-                        tcpClient = undefined;
-                    }
-                    if (tcpServer) {
-                        tcpServer.close();
-                        tcpServer = undefined;
-                    }
 
                     udpPeerElem.className = "active";
                     tcpClientElem.className = "";
@@ -203,30 +210,12 @@
                 case "tcpClient": {
                     activeType = type;
 
-                    if (udpPeer) {
-                        udpPeer.close();
-                        udpPeer = undefined;
-                    }
-                    if (tcpServer) {
-                        tcpServer.close();
-                        tcpServer = undefined;
-                    }
-
                     udpPeerElem.className = "";
                     tcpClientElem.className = "active";
                     tcpServerElem.className = "";
                 } break;
                 case "tcpServer": {
                     activeType = type;
-
-                    if (udpPeer) {
-                        udpPeer.close();
-                        udpPeer = undefined;
-                    }
-                    if (tcpClient) {
-                        tcpClient.close();
-                        tcpClient = undefined;
-                    }
 
                     udpPeerElem.className = "";
                     tcpClientElem.className = "";
@@ -269,17 +258,33 @@
         }
 
         function openClick(input) {
-            console.log(`openCLick(${input})`);
+            console.log(`openClick(${input})`);
 
             switch (activeType) {
                 case "udpPeer": {
-
+                    if (!udpPeer) {
+                        udpPeer = socketify.udpPeer(input, {
+                            onOpen: function (address) {
+                                console.log(`[udpPeer] onOpen: ${address}`);
+                            },
+                            onReceive: function (address, message) {
+                                console.log(`[udpPeer] onReceive <${address}>:`, message);
+                            },
+                            onClose: function (error) {
+                                console.log(`[udpPeer] onClose: ${error}`);
+                            }
+                        });
+                    }
                 } break;
                 case "tcpClient": {
-
+                    if (!tcpClient) {
+                        // TODO
+                    }
                 } break;
                 case "tcpServer": {
-
+                    if (!tcpServer) {
+                        // TODO
+                    }
                 } break;
             }
         }
@@ -289,7 +294,15 @@
 
             switch (activeType) {
                 case "udpPeer": {
-
+                    if (udpPeer) {
+                        var blocks = input.split(' ');
+                        if (blocks.length > 1) {
+                            var message = input.substring(blocks[0].length + 1);
+                            if (message.length > 0) {
+                                udpPeer.send(blocks[0], message);
+                            }
+                        }
+                    }
                 } break;
                 case "tcpClient": {
 
@@ -321,13 +334,22 @@
 
             switch (activeType) {
                 case "udpPeer": {
-
+                    if (udpPeer) {
+                        udpPeer.close();
+                        udpPeer = undefined;
+                    }
                 } break;
                 case "tcpClient": {
-
+                    if (tcpClient) {
+                        tcpClient.close();
+                        tcpClient = undefined;
+                    }
                 } break;
                 case "tcpServer": {
-
+                    if (tcpServer) {
+                        tcpServer.close();
+                        tcpServer = undefined;
+                    }
                 } break;
             }
         }
@@ -350,60 +372,46 @@
             <button id="close" onclick="closeClick(getInput())">Close</button>
         </div>
         <div id="logs">
-            <div><span>udpPeer</span><b>open &rarr; </b>bound to <i class="address">&lt;127.0.0.1:9696&gt;</i></div>
-            <div><span>tcpServer</span><b>connect &rarr; </b>accepted <i class="address">&lt;127.0.0.1:1234&gt;</i></div>
             <div>
-                <span>tcpClient</span><b>receive &rarr; </b>message from <i class="address">&lt;127.0.0.1:1234&gt;</i>
-                <div>{ msg: "Hey, I'm Client X!" }</div>
+                <span class="type">udpPeer</span>
+                <span class="outEvent">open &rarr;</span>
+                <span class="param">address{<b>:1234</b>}</span>
             </div>
-            <div><span>udpPeer</span><b>disconnect &rarr; </b>dropped <i class="address">&lt;127.0.0.1:1234&gt;</i>
-                with error: <i class="error">connection closed</i></div>
-            <div><span>udpPeer</span><b>close &rarr; </b>with error: <i class="noError">none</i></div>
-            <div><span>udpPeer</span><b>open &rarr; </b>bound to <i class="address">&lt;127.0.0.1:9696&gt;</i></div>
-            <div><span>tcpServer</span><b>connect &rarr; </b>accepted <i class="address">&lt;127.0.0.1:1234&gt;</i></div>
             <div>
-                <span>tcpClient</span><b>receive &rarr; </b>message from <i class="address">&lt;127.0.0.1:1234&gt;</i>
-                <div>{ msg: "Hey, I'm Client X!" }</div>
+                <span class="type">udpPeer</span>
+                <span class="inEvent">onOpen &larr;</span>
+                <span class="param">address{<b>[::]:1234</b>}</span>
             </div>
-            <div><span>udpPeer</span><b>disconnect &rarr; </b>dropped <i class="address">&lt;127.0.0.1:1234&gt;</i>
-                with error: <i class="error">connection closed</i></div>
-            <div><span>udpPeer</span><b>close &rarr; </b>with error: <i class="noError">none</i></div>
-            <div><span>udpPeer</span><b>open &rarr; </b>bound to <i class="address">&lt;127.0.0.1:9696&gt;</i></div>
-            <div><span>tcpServer</span><b>connect &rarr; </b>accepted <i class="address">&lt;127.0.0.1:1234&gt;</i></div>
             <div>
-                <span>tcpClient</span><b>receive &rarr; </b>message from <i class="address">&lt;127.0.0.1:1234&gt;</i>
-                <div>{ msg: "Hey, I'm Client X!" }</div>
+                <span class="type">udpPeer</span>
+                <span class="inEvent">onReceive &larr;</span>
+                <span class="param">address{<b>127.0.0.1:9696</b>}</span>
+                <span class="param">message{<b>4 characters</b>}</span>
+                <div class="payload">
+                    <div>
+                        <b>message</b>ping
+                    </div>
+                </div>
             </div>
-            <div><span>udpPeer</span><b>disconnect &rarr; </b>dropped <i class="address">&lt;127.0.0.1:1234&gt;</i>
-                with error: <i class="error">connection closed</i></div>
-            <div><span>udpPeer</span><b>close &rarr; </b>with error: <i class="noError">none</i></div>
-            <div><span>udpPeer</span><b>open &rarr; </b>bound to <i class="address">&lt;127.0.0.1:9696&gt;</i></div>
-            <div><span>tcpServer</span><b>connect &rarr; </b>accepted <i class="address">&lt;127.0.0.1:1234&gt;</i></div>
             <div>
-                <span>tcpClient</span><b>receive &rarr; </b>message from <i class="address">&lt;127.0.0.1:1234&gt;</i>
-                <div>{ msg: "Hey, I'm Client X!" }</div>
+                <span class="type">udpPeer</span>
+                <span class="outEvent">send &rarr;</span>
+                <span class="param">address{<b>127.0.0.1:9696</b>}</span>
+                <span class="param">message{<b>4 characters</b>}</span>
+                <div class="payload">
+                    <div>
+                        <b>message</b>pong
+                    </div>
+                </div>
             </div>
-            <div><span>udpPeer</span><b>disconnect &rarr; </b>dropped <i class="address">&lt;127.0.0.1:1234&gt;</i>
-                with error: <i class="error">connection closed</i></div>
-            <div><span>udpPeer</span><b>close &rarr; </b>with error: <i class="noError">none</i></div>
-            <div><span>udpPeer</span><b>open &rarr; </b>bound to <i class="address">&lt;127.0.0.1:9696&gt;</i></div>
-            <div><span>tcpServer</span><b>connect &rarr; </b>accepted <i class="address">&lt;127.0.0.1:1234&gt;</i></div>
             <div>
-                <span>tcpClient</span><b>receive &rarr; </b>message from <i class="address">&lt;127.0.0.1:1234&gt;</i>
-                <div>{ msg: "Hey, I'm Client X!" }</div>
+                <span class="type">udpPeer</span>
+                <span class="outEvent">close &rarr;</span>
             </div>
-            <div><span>udpPeer</span><b>disconnect &rarr; </b>dropped <i class="address">&lt;127.0.0.1:1234&gt;</i>
-                with error: <i class="error">connection closed</i></div>
-            <div><span>udpPeer</span><b>close &rarr; </b>with error: <i class="noError">none</i></div>
-            <div><span>udpPeer</span><b>open &rarr; </b>bound to <i class="address">&lt;127.0.0.1:9696&gt;</i></div>
-            <div><span>tcpServer</span><b>connect &rarr; </b>accepted <i class="address">&lt;127.0.0.1:1234&gt;</i></div>
             <div>
-                <span>tcpClient</span><b>receive &rarr; </b>message from <i class="address">&lt;127.0.0.1:1234&gt;</i>
-                <div>{ msg: "Hey, I'm Client X!" }</div>
+                <span class="type">udpPeer</span>
+                <span class="inEvent">onClose &larr;</span>
             </div>
-            <div><span>udpPeer</span><b>disconnect &rarr; </b>dropped <i class="address">&lt;127.0.0.1:1234&gt;</i>
-                with error: <i class="error">connection closed</i></div>
-            <div><span>udpPeer</span><b>close &rarr; </b>with error: <i class="noError">none</i></div>
         </div>
     </div>
 </body>
