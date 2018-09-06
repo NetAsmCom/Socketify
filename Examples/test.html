@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Socketify</title>
+    <style>
+        @font-face {
+            font-family: "Nunito";
+            src: url("nunito.ttf");
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-size: 0;
+            box-sizing: border-box;
+            vertical-align: middle;
+            border: 0;
+            outline: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: "Nunito";
+        }
+
+        #page {
+            margin: auto;
+            padding: 32px;
+            max-width: 960px;
+            height: 100%;
+        }
+
+        #type {
+            height: 48px;
+        }
+
+        #type a {
+            display: inline-block;
+            margin-top: 4px;
+            margin-right: 24px;
+            font-size: 20px;
+            color: gray;
+            cursor: pointer;
+        }
+
+        #type .active {
+            margin-top: 0;
+            font-size: 32px;
+            font-weight: bold;
+            color: black;
+        }
+
+        #type a:hover {
+            color: black;
+        }
+
+        #events {
+            margin-top: 32px;
+        }
+
+        #events * {
+            height: 48px;
+        }
+
+        #events input {
+            padding: 12px 16px;
+            width: calc(100% - 416px);
+            font-size: 16px;
+            border-radius: 24px;
+            border: 1px solid black;
+        }
+
+        #events button {
+            font-size: 16px;
+            padding: 12px 16px;
+            margin-left: 8px;
+            width: 96px;
+            color: white;
+            background: black;
+            border-radius: 24px;
+            cursor: pointer;
+        }
+
+        #events button:hover {
+            background: gray;
+        }
+
+        #events button:active {
+            color: black;
+        }
+
+        #logs {
+            margin-top: 32px;
+            padding: 32px;
+            height: calc(100% - 160px);
+            overflow-x: hidden;
+            overflow-y: scroll;
+            border-radius: 24px;
+            background: #eee;
+        }
+
+        #logs * {
+            font-size: 16px;
+        }
+
+        #logs div {
+            margin-bottom: 16px;
+        }
+
+        #logs div div {
+            margin-left: 24px;
+            padding-left: 16px;
+            font-size: 14px;
+            border-left: 1px solid gray;
+        }
+    </style>
+    <script></script>
+</head>
+
+<body>
+    <div id="page">
+        <div id="type">
+            <a id="udpPeer" class="active">UDP Peer</a>
+            <a id="tcpClient">TCP Client</a>
+            <a id="tcpServer">TCP Server</a>
+        </div>
+        <div id="events">
+            <input id="input" maxlength="1500" placeholder="Input">
+            <button id="open">Open</button>
+            <button id="send">Send</button>
+            <button id="drop">Drop</button>
+            <button id="close">Close</button>
+        </div>
+        <div id="logs">
+            <div><b>open &rarr; </b>bound to <i>&lt;127.0.0.1:9696&gt;</i></div>
+            <div><b>connect &rarr; </b>accepted <i>&lt;127.0.0.1:1234&gt;</i></div>
+            <div>
+                <b>receive &rarr; </b>message from <i>&lt;127.0.0.1:1234&gt;</i>
+                <div>{ msg: "Hey, I'm Client X!" }</div>
+            </div>
+            <div><b>disconnect &rarr; </b>dropped <i>&lt;127.0.0.1:1234&gt;</i> with error: <i>connection closed</i></div>
+            <div><b>close &rarr; </b>with error: <i>none</i></div>
+        </div>
+    </div>
+</body>
+
+</html>
