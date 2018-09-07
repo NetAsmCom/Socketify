@@ -131,10 +131,6 @@
             color: green;
         }
 
-        #logs div .param {
-            color: black;
-        }
-
         #logs div .payload {
             margin-top: 8px;
             margin-left: 24px;
@@ -142,16 +138,11 @@
             border-left: 1px solid gray;
         }
 
-        #logs div .payload * {
-            margin-bottom: 4px;
+        #logs div .payload div {
             font-size: 14px;
         }
 
-        #logs div .payload b {
-            display: block;
-        }
-
-        #logs div .payload .error {
+        .error {
             color: red;
         }
     </style>
@@ -232,28 +223,107 @@
             return input;
         }
 
-        function escapeHTML(raw) {
-            return raw
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&apos;");
-        }
+        var logIDs = [];
+        var lastLogID = 0;
 
-        function addLog(event, message) {
-            console.log(`addLog():`, event, message);
+        function addLog(log) {
+            if (!log) {
+                return;
+            }
 
-            switch (activeType) {
-                case "udpPeer": {
+            var isScrolledToBottom = logsElem.scrollHeight - logsElem.clientHeight <= logsElem.scrollTop + 1;
 
-                } break;
-                case "tcpClient": {
+            var logID = lastLogID++;
+            if (lastLogID > 1024) {
+                lastLogID = 0;
+            }
 
-                } break;
-                case "tcpServer": {
+            var logElem = document.createElement("div");
+            logElem.id = `log-${logID}`;
+            {
+                if (log.type) {
+                    var typeElem = document.createElement("span");
+                    typeElem.className = "type";
+                    typeElem.innerHTML = log.type;
+                    logElem.appendChild(typeElem);
+                }
 
-                } break;
+                if (log.outEvent) {
+                    var outEventElem = document.createElement("span");
+                    outEventElem.className = "outEvent";
+                    outEventElem.innerHTML = log.outEvent + " &rarr;";
+                    logElem.appendChild(outEventElem);
+                }
+
+                if (log.inEvent) {
+                    var inEventElem = document.createElement("span");
+                    inEventElem.className = "inEvent";
+                    inEventElem.innerHTML = log.inEvent + " &larr;";
+                    logElem.appendChild(inEventElem);
+                }
+
+                if (log.address) {
+                    var addressElem = document.createElement("span");
+                    addressElem.innerHTML = `address{<b>${log.address}</b>}`;
+                    logElem.appendChild(addressElem);
+                }
+
+                var payloadElem = undefined;
+                if (log.message || log.error) {
+                    payloadElem = document.createElement("div");
+                    payloadElem.className = "payload";
+                }
+
+                if (log.message) {
+                    var messageElem = document.createElement("span");
+                    messageElem.innerHTML = `message{<b>${log.message.length} chars</b>}`;
+                    logElem.appendChild(messageElem);
+
+                    if (payloadElem) {
+                        var messagePayloadElem = document.createElement("div");
+                        messagePayloadElem.innerText = log.message;
+                        payloadElem.appendChild(messagePayloadElem);
+                    }
+                }
+
+                if (log.error) {
+                    var errorElem = document.createElement("span");
+                    errorElem.className = "error";
+                    errorElem.innerHTML = `error{<b>${log.error.length} chars</b>}`;
+                    logElem.appendChild(errorElem);
+
+                    if (payloadElem) {
+                        var errorPayloadElem = document.createElement("div");
+                        errorPayloadElem.className = "error";
+                        errorPayloadElem.innerText = log.error;
+                        payloadElem.appendChild(errorPayloadElem);
+                        console.log("error payload");
+                    }
+                }
+
+                if (log.usage) {
+                    var usageElem = document.createElement("span");
+                    usageElem.className = "error";
+                    usageElem.innerHTML = log.usage;
+                    logElem.appendChild(usageElem);
+                }
+
+                if (payloadElem) {
+                    logElem.appendChild(payloadElem);
+                }
+            }
+            logsElem.appendChild(logElem);
+
+            logIDs.push(logID);
+            if (logIDs.length > 32) {
+                var topLogID = logIDs.shift();
+                if (topLogID !== undefined) {
+                    logsElem.removeChild(document.getElementById(`log-${topLogID}`));
+                }
+            }
+
+            if (isScrolledToBottom) {
+                logsElem.scrollTop = logsElem.scrollHeight - logsElem.clientHeight;
             }
         }
 
@@ -265,12 +335,28 @@
                     if (!udpPeer) {
                         udpPeer = socketify.udpPeer(input, {
                             onOpen: function (address) {
+                                addLog({
+                                    type: "udpPeer",
+                                    inEvent: "onOpen",
+                                    address: address
+                                });
                                 console.log(`[udpPeer] onOpen: ${address}`);
                             },
                             onReceive: function (address, message) {
+                                addLog({
+                                    type: "udpPeer",
+                                    inEvent: "onReceive",
+                                    address: address,
+                                    message: message
+                                });
                                 console.log(`[udpPeer] onReceive <${address}>:`, message);
                             },
                             onClose: function (error) {
+                                addLog({
+                                    type: "udpPeer",
+                                    inEvent: "onClose",
+                                    error: error
+                                });
                                 console.log(`[udpPeer] onClose: ${error}`);
                             }
                         });
@@ -375,34 +461,45 @@
             <div>
                 <span class="type">udpPeer</span>
                 <span class="outEvent">open &rarr;</span>
-                <span class="param">address{<b>:1234</b>}</span>
+                <span class="error">invalid input! <b>open: `&lt;address&gt;`</b></span>
+            </div>
+            <div>
+                <span class="type">udpPeer</span>
+                <span class="outEvent">open &rarr;</span>
+                <span>address{<b>:1234</b>}</span>
             </div>
             <div>
                 <span class="type">udpPeer</span>
                 <span class="inEvent">onOpen &larr;</span>
-                <span class="param">address{<b>[::]:1234</b>}</span>
+                <span>address{<b>[::]:1234</b>}</span>
+            </div>
+            <div>
+                <span class="type">udpPeer</span>
+                <span class="outEvent">open &rarr;</span>
+                <span class="error">already open!</span>
             </div>
             <div>
                 <span class="type">udpPeer</span>
                 <span class="inEvent">onReceive &larr;</span>
-                <span class="param">address{<b>127.0.0.1:9696</b>}</span>
-                <span class="param">message{<b>4 characters</b>}</span>
+                <span>address{<b>127.0.0.1:9696</b>}</span>
+                <span>message{<b>4 bytes</b>}</span>
                 <div class="payload">
-                    <div>
-                        <b>message</b>ping
-                    </div>
+                    <div>ping</div>
                 </div>
             </div>
             <div>
                 <span class="type">udpPeer</span>
                 <span class="outEvent">send &rarr;</span>
-                <span class="param">address{<b>127.0.0.1:9696</b>}</span>
-                <span class="param">message{<b>4 characters</b>}</span>
+                <span>address{<b>127.0.0.1:9696</b>}</span>
+                <span>message{<b>4 bytes</b>}</span>
                 <div class="payload">
-                    <div>
-                        <b>message</b>pong
-                    </div>
+                    <div>pong</div>
                 </div>
+            </div>
+            <div>
+                <span class="type">udpPeer</span>
+                <span class="outEvent">send &rarr;</span>
+                <span class="error">invalid input! <b>send: `&lt;address&gt; &lt;message&gt;`</b></span>
             </div>
             <div>
                 <span class="type">udpPeer</span>
@@ -411,6 +508,19 @@
             <div>
                 <span class="type">udpPeer</span>
                 <span class="inEvent">onClose &larr;</span>
+                <span>error{<b>none</b>}</span>
+            </div>
+            <div>
+                <span class="type">udpPeer</span>
+                <span class="outEvent">close &rarr;</span>
+            </div>
+            <div>
+                <span class="type">udpPeer</span>
+                <span class="inEvent">onClose &larr;</span>
+                <span class="error">error{<b>17 bytes</b>}</span>
+                <div class="payload">
+                    <div class="error">already closed!</div>
+                </div>
             </div>
         </div>
     </div>
