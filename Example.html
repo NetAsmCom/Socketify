@@ -328,11 +328,15 @@
         }
 
         function openClick(input) {
-            console.log(`openClick(${input})`);
-
             switch (activeType) {
                 case "udpPeer": {
                     if (!udpPeer) {
+                        addLog({
+                            type: "udpPeer",
+                            outEvent: "open",
+                            address: input
+                        });
+                        console.log(`[udpPeer] open: ${input}`);
                         udpPeer = socketify.udpPeer(input, {
                             onOpen: function (address) {
                                 addLog({
@@ -352,6 +356,7 @@
                                 console.log(`[udpPeer] onReceive <${address}>:`, message);
                             },
                             onClose: function (error) {
+                                udpPeer = undefined;
                                 addLog({
                                     type: "udpPeer",
                                     inEvent: "onClose",
@@ -385,6 +390,13 @@
                         if (blocks.length > 1) {
                             var message = input.substring(blocks[0].length + 1);
                             if (message.length > 0) {
+                                addLog({
+                                    type: "udpPeer",
+                                    outEvent: "send",
+                                    address: blocks[0],
+                                    message: message
+                                });
+                                console.log(`[udpPeer] send <${blocks[0]}>: ${message}`);
                                 udpPeer.send(blocks[0], message);
                             }
                         }
@@ -421,6 +433,12 @@
             switch (activeType) {
                 case "udpPeer": {
                     if (udpPeer) {
+                        addLog({
+                            type: "udpPeer",
+                            outEvent: "close"
+                        });
+                        console.log(`[udpPeer] close`);
+
                         udpPeer.close();
                         udpPeer = undefined;
                     }
@@ -457,72 +475,7 @@
             <button id="drop" onclick="dropClick(getInput())">Drop</button>
             <button id="close" onclick="closeClick(getInput())">Close</button>
         </div>
-        <div id="logs">
-            <div>
-                <span class="type">udpPeer</span>
-                <span class="outEvent">open &rarr;</span>
-                <span class="error">invalid input! <b>open: `&lt;address&gt;`</b></span>
-            </div>
-            <div>
-                <span class="type">udpPeer</span>
-                <span class="outEvent">open &rarr;</span>
-                <span>address{<b>:1234</b>}</span>
-            </div>
-            <div>
-                <span class="type">udpPeer</span>
-                <span class="inEvent">onOpen &larr;</span>
-                <span>address{<b>[::]:1234</b>}</span>
-            </div>
-            <div>
-                <span class="type">udpPeer</span>
-                <span class="outEvent">open &rarr;</span>
-                <span class="error">already open!</span>
-            </div>
-            <div>
-                <span class="type">udpPeer</span>
-                <span class="inEvent">onReceive &larr;</span>
-                <span>address{<b>127.0.0.1:9696</b>}</span>
-                <span>message{<b>4 bytes</b>}</span>
-                <div class="payload">
-                    <div>ping</div>
-                </div>
-            </div>
-            <div>
-                <span class="type">udpPeer</span>
-                <span class="outEvent">send &rarr;</span>
-                <span>address{<b>127.0.0.1:9696</b>}</span>
-                <span>message{<b>4 bytes</b>}</span>
-                <div class="payload">
-                    <div>pong</div>
-                </div>
-            </div>
-            <div>
-                <span class="type">udpPeer</span>
-                <span class="outEvent">send &rarr;</span>
-                <span class="error">invalid input! <b>send: `&lt;address&gt; &lt;message&gt;`</b></span>
-            </div>
-            <div>
-                <span class="type">udpPeer</span>
-                <span class="outEvent">close &rarr;</span>
-            </div>
-            <div>
-                <span class="type">udpPeer</span>
-                <span class="inEvent">onClose &larr;</span>
-                <span>error{<b>none</b>}</span>
-            </div>
-            <div>
-                <span class="type">udpPeer</span>
-                <span class="outEvent">close &rarr;</span>
-            </div>
-            <div>
-                <span class="type">udpPeer</span>
-                <span class="inEvent">onClose &larr;</span>
-                <span class="error">error{<b>17 bytes</b>}</span>
-                <div class="payload">
-                    <div class="error">already closed!</div>
-                </div>
-            </div>
-        </div>
+        <div id="logs"></div>
     </div>
 </body>
 
