@@ -353,7 +353,7 @@
                                     address: address,
                                     message: message
                                 });
-                                console.log(`[udpPeer] onReceive <${address}>:`, message);
+                                console.log(`[udpPeer] onReceive <${address}>: ${message}`);
                             },
                             onClose: function (error) {
                                 udpPeer = undefined;
@@ -369,12 +369,94 @@
                 } break;
                 case "tcpClient": {
                     if (!tcpClient) {
-                        // TODO
+                        addLog({
+                            type: "tcpClient",
+                            outEvent: "open",
+                            address: input
+                        });
+                        console.log(`[tcpClient] open: ${input}`);
+                        tcpClient = socketify.tcpClient(input, {
+                            onOpen: function (address) {
+                                addLog({
+                                    type: "tcpClient",
+                                    inEvent: "onOpen",
+                                    address: address
+                                });
+                                console.log(`[tcpClient] onOpen: ${address}`);
+                            },
+                            onReceive: function (message) {
+                                addLog({
+                                    type: "tcpClient",
+                                    inEvent: "onReceive",
+                                    message: message
+                                });
+                                console.log(`[tcpClient] onReceive: ${message}`);
+                            },
+                            onClose: function (error) {
+                                tcpClient = undefined;
+                                addLog({
+                                    type: "tcpClient",
+                                    inEvent: "onClose",
+                                    error: error
+                                });
+                                console.log(`[tcpClient] onClose: ${error}`);
+                            }
+                        });
                     }
                 } break;
                 case "tcpServer": {
                     if (!tcpServer) {
-                        // TODO
+                        addLog({
+                            type: "tcpServer",
+                            outEvent: "open",
+                            address: input
+                        });
+                        console.log(`[tcpServer] open: ${input}`);
+                        tcpServer = socketify.tcpServer(input, {
+                            onOpen: function (address) {
+                                addLog({
+                                    type: "tcpServer",
+                                    inEvent: "onOpen",
+                                    address: address
+                                });
+                                console.log(`[tcpServer] onOpen: ${address}`);
+                            },
+                            onConnect: function (address) {
+                                addLog({
+                                    type: "tcpServer",
+                                    inEvent: "onConnect",
+                                    address: address
+                                });
+                                console.log(`[tcpServer] onConnect <${address}>`);
+                            },
+                            onReceive: function (address, message) {
+                                addLog({
+                                    type: "tcpServer",
+                                    inEvent: "onReceive",
+                                    address: address,
+                                    message: message
+                                });
+                                console.log(`[tcpServer] onReceive <${address}>: ${message}`);
+                            },
+                            onDisconnect: function (address, error) {
+                                addLog({
+                                    type: "tcpServer",
+                                    inEvent: "onDisconnect",
+                                    address: address,
+                                    error: error
+                                });
+                                console.log(`[tcpServer] onDisconnect <${address}>: ${error}`);
+                            },
+                            onClose: function (error) {
+                                tcpServer = undefined;
+                                addLog({
+                                    type: "tcpServer",
+                                    inEvent: "onClose",
+                                    error: error
+                                });
+                                console.log(`[tcpServer] onClose: ${error}`);
+                            }
+                        });
                     }
                 } break;
             }
@@ -403,10 +485,35 @@
                     }
                 } break;
                 case "tcpClient": {
-
+                    if (tcpClient) {
+                        if (input.length > 0) {
+                            addLog({
+                                type: "tcpClient",
+                                outEvent: "send",
+                                message: input
+                            });
+                            console.log(`[tcpClient] send: ${message}`);
+                            tcpClient.send(input);
+                        }
+                    }
                 } break;
                 case "tcpServer": {
-
+                    if (tcpServer) {
+                        var blocks = input.split(' ');
+                        if (blocks.length > 1) {
+                            var message = input.substring(blocks[0].length + 1);
+                            if (message.length > 0) {
+                                addLog({
+                                    type: "tcpServer",
+                                    outEvent: "send",
+                                    address: blocks[0],
+                                    message: message
+                                });
+                                console.log(`[tcpServer] send <${blocks[0]}>: ${message}`);
+                                tcpServer.send(blocks[0], message);
+                            }
+                        }
+                    }
                 } break;
             }
         }
@@ -422,7 +529,17 @@
 
                 } break;
                 case "tcpServer": {
-
+                    if (tcpServer) {
+                        if (input.length > 0) {
+                            addLog({
+                                type: "tcpServer",
+                                outEvent: "drop",
+                                address: input
+                            });
+                            console.log(`[tcpServer] drop: ${input}`);
+                            tcpServer.drop(input);
+                        }
+                    }
                 } break;
             }
         }
@@ -445,12 +562,24 @@
                 } break;
                 case "tcpClient": {
                     if (tcpClient) {
+                        addLog({
+                            type: "tcpClient",
+                            outEvent: "close"
+                        });
+                        console.log(`[tcpClient] close`);
+
                         tcpClient.close();
                         tcpClient = undefined;
                     }
                 } break;
                 case "tcpServer": {
                     if (tcpServer) {
+                        addLog({
+                            type: "tcpServer",
+                            outEvent: "close"
+                        });
+                        console.log(`[tcpServer] close`);
+
                         tcpServer.close();
                         tcpServer = undefined;
                     }
