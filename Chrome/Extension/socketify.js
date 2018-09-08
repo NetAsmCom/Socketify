@@ -33,21 +33,21 @@ window.socketify = {
 
         switch (msg.event) {
             case "open": {
-                var openHandler = socket._handlers.onOpen;
+                var openHandler = socket.onOpen;
                 if (openHandler) {
                     openHandler(msg.address);
                 }
             } return;
             case "connect": {
-                var connectHandler = socket._handlers.onConnect;
-                if (connectHandler && socket._id[0] === 's') {
+                var connectHandler = socket.onConnect;
+                if (connectHandler && socket.id[0] === 's') {
                     connectHandler(msg.address);
                 }
             } return;
             case "receive": {
-                var receiveHandler = socket._handlers.onReceive;
+                var receiveHandler = socket.onReceive;
                 if (receiveHandler) {
-                    if (socket._id[0] === 'c') {
+                    if (socket.id[0] === 'c') {
                         receiveHandler(msg.payload);
                     } else {
                         receiveHandler(msg.address, msg.payload);
@@ -55,13 +55,13 @@ window.socketify = {
                 }
             } return;
             case "disconnect": {
-                var disconnectHandler = socket._handlers.onDisconnect;
-                if (disconnectHandler && socket._id[0] === 's') {
+                var disconnectHandler = socket.onDisconnect;
+                if (disconnectHandler && socket.id[0] === 's') {
                     disconnectHandler(msg.address, msg.error);
                 }
             } return;
             case "close": {
-                var closeHandler = socket._handlers.onClose;
+                var closeHandler = socket.onClose;
                 if (closeHandler) {
                     closeHandler(msg.error);
                 }
@@ -71,8 +71,12 @@ window.socketify = {
     tcpServer: function (address, handlers) {
         var id = `s-${uuidv4()}`;
         var socket = {
-            _id: id,
-            _handlers: handlers, // onOpen(addr), onConnect(addr), onReceive(addr, msg), onDisconnect(addr, err), onClose(err)
+            id: id,
+            onOpen: handlers.onOpen || function (address) { /* unhandled */ },
+            onConnect: handlers.onConnect || function (address) { /* unhandled */ },
+            onReceive: handlers.onReceive || function (address, message) { /* unhandled */ },
+            onDisconnect: handlers.onDisconnect || function (address, error) { /* unhandled */ },
+            onClose: handlers.onClose || function (error) { /* unhandled */ },
             send: function (target, message) {
                 socketify._post({
                     id: id,
@@ -116,8 +120,10 @@ window.socketify = {
     tcpClient: function (address, handlers) {
         var id = `c-${uuidv4()}`;
         var socket = {
-            _id: id,
-            _handlers: handlers, // onOpen(addr), onReceive(msg), onClose(err)
+            id: id,
+            onOpen: handlers.onOpen || function (address) { /* unhandled */ },
+            onReceive: handlers.onReceive || function (message) { /* unhandled */ },
+            onClose: handlers.onClose || function (error) { /* unhandled */ },
             send: function (message) {
                 socketify._post({
                     id: id,
@@ -151,8 +157,10 @@ window.socketify = {
     udpPeer: function (address, handlers) {
         var id = `p-${uuidv4()}`;
         var socket = {
-            _id: id,
-            _handlers: handlers, // onOpen(addr), onReceive(addr, msg), onClose(err)
+            id: id,
+            onOpen: handlers.onOpen || function (address) { /* unhandled */ },
+            onReceive: handlers.onReceive || function (address, message) { /* unhandled */ },
+            onClose: handlers.onClose || function (error) { /* unhandled */ },
             send: function (target, message) {
                 socketify._post({
                     id: id,
