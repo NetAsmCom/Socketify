@@ -2,6 +2,7 @@
 
 ## Contents
 
+- [uuidv4]()
 - [socketify]()
   - [udpPeer]()
   - [tcpClient]()
@@ -31,15 +32,26 @@
   - [drop]()
   - [close]()
 
-## socketify
+## `function` uuidv4
+
+Takes no parameter and returns _UUIDv4_ `string` back.
+
+```js
+var coolID = uuidv4();
+console.log(`my cool universally unique ID is ${coolID}`);
+```
+
+## `object` socketify
+
+Some description goes here
 
 ### `function` udpPeer(address, handlers)
 
-- `string` address
+- `string` **address**
 
   local address to bind socket
 
-- `object` handlers
+- `object` **handlers**
 
   contains `onOpen`, `onReceive`, `onClose` event functions
 
