@@ -151,8 +151,50 @@ var myServer = socketify.tcpServer(":9696", {
 });
 ```
 
-## udpPeer
+## `object` udpPeer
 
-## tcpClient
+### `string` id
 
-## tcpServer
+### `function` onOpen(address)
+
+### `function` onReceive(address, message)
+
+### `function` onClose(error)
+
+### `function` send(address, message)
+
+### `function` close()
+
+## `object` tcpClient
+
+### `string` id
+
+### `function` onOpen(address)
+
+### `function` onReceive(message)
+
+### `function` onClose(error)
+
+### `function` send(message)
+
+### `function` close()
+
+## `object` tcpServer
+
+### `string` id
+
+### `function` onOpen(address)
+
+### `function` onConnect(address)
+
+### `function` onReceive(address, message)
+
+### `function` onDisconnect(address, error)
+
+### `function` onClose(error)
+
+### `function` send(address, message)
+
+### `function` drop(address)
+
+### `function` close()
