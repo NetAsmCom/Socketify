@@ -12,7 +12,7 @@
 
 ## Getting Started
 
-## TODO
+## Roadmap
 
 - [x] Native Messaging Host
 - [x] Socketify API
