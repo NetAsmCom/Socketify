@@ -62,7 +62,7 @@ Some description goes here
 ```js
 var myPeer = socketify.udpPeer(":9696", {
     onOpen: function (address) {
-        console.log(`peer opened and bound to <${address}>`);
+        console.log(`peer bound to <${address}>`);
     },
     onReceive: function (address, message) {
         console.log(`peer received <${address}>: ${message}`);
@@ -77,9 +77,79 @@ var myPeer = socketify.udpPeer(":9696", {
 });
 ```
 
-### tcpClient(address, handlers)
+### `function` tcpClient(address, handlers)
 
-### tcpServer(address, handlers)
+- `string` **address**
+
+  server address to connect
+
+- `object` **handlers**
+
+  contains `onOpen`, `onReceive`, `onClose` event functions
+
+**returns** `object` [tcpClient]()
+
+> This function does things!
+
+```js
+var myClient = socketify.tcpClient("127.0.0.1:9696", {
+    onOpen: function (address) {
+        console.log(`client bound to <${address}> and connected`);
+    },
+    onReceive: function (message) {
+        console.log(`client received: ${message}`);
+    },
+    onClose: function (error) {
+        if (error) {
+            console.log(`client closed with error: ${error}`);
+        } else {
+            console.log(`client closed`);
+        }
+    }
+});
+```
+
+### `function` tcpServer(address, handlers)
+
+- `string` **address**
+
+  local address to bind socket
+
+- `object` **handlers**
+
+  contains `onOpen`, `onConnect`, `onReceive`, `onDisconnect` `onClose` event functions
+
+**returns** `object` [tcpServer]()
+
+> This function does things!
+
+```js
+var myServer = socketify.tcpServer(":9696", {
+    onOpen: function (address) {
+        console.log(`server bound to <${address}> and listening`);
+    },
+    onConnect: function (address) {
+        console.log(`server connected to <${address}>`);
+    },
+    onReceive: function (address, message) {
+        console.log(`server received <${address}>: ${message}`);
+    },
+    onDisconnect: function (address, error) {
+        if (error) {
+            console.log(`server disconnected from <${address}> with error: ${error}`);
+        } else {
+            console.log(`server disconnected from <${address}>`);
+        }
+    },
+    onClose: function (error) {
+        if (error) {
+            console.log(`server closed with error: ${error}`);
+        } else {
+            console.log(`server closed`);
+        }
+    }
+});
+```
 
 ## udpPeer
 
