@@ -1,6 +1,6 @@
 # Socketify
 
-TCP and UDP Sockets API on Chrome, Firefox and Safari desktop browsers with extensions backed by native messaging host.
+> TCP and UDP Sockets API on Chrome, Firefox and Safari desktop browsers with extensions backed by native messaging host.
 
 **What?** Explain what this project is about.
 
