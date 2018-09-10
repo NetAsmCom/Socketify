@@ -17,6 +17,7 @@
 - [x] Native Messaging Host
 - [x] Socketify API
 - [x] Chrome Extension
+- [ ] Readme Sections
 - [ ] API Documentation
 - [ ] Firefox Porting
 - [ ] Safari Extension
