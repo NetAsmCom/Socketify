@@ -2,35 +2,35 @@
 
 ## Contents
 
-- [uuidv4]()
-- [socketify]()
-  - [udpPeer]()
-  - [tcpClient]()
-  - [tcpServer]()
-- [udpPeer]()
-  - [id]()
-  - [onOpen]()
-  - [onReceive]()
-  - [onClose]()
-  - [send]()
-  - [close]()
-- [tcpClient]()
-  - [id]()
-  - [onOpen]()
-  - [onReceive]()
-  - [onClose]()
-  - [send]()
-  - [close]()
-- [tcpServer]()
-  - [id]()
-  - [onOpen]()
-  - [onConnect]()
-  - [onReceive]()
-  - [onDisconnect]()
-  - [onClose]()
-  - [send]()
-  - [drop]()
-  - [close]()
+- [uuidv4](#function-uuidv4)
+- [socketify](#object-socketify)
+  - [udpPeer](#function-udppeeraddress-handlers)
+  - [tcpClient](#function-tcpclientaddress-handlers)
+  - [tcpServer](#function-tcpserveraddress-handlers)
+- [udpPeer](#object-udppeer)
+  - [id](#string-id)
+  - [onOpen](#function-onopenaddress)
+  - [onReceive](#function-onreceiveaddress-message)
+  - [onClose](#function-oncloseerror)
+  - [send](#function-sendaddress-message)
+  - [close](#function-close)
+- [tcpClient](#object-tcpclient)
+  - [id](#string-id-1)
+  - [onOpen](#function-onopenaddress-1)
+  - [onReceive](#function-onreceivemessage)
+  - [onClose](#function-oncloseerror-1)
+  - [send](#function-sendmessage)
+  - [close](#function-close-1)
+- [tcpServer](#object-tcpserver)
+  - [id](#string-id-2)
+  - [onOpen](#function-onopenaddress-2)
+  - [onConnect](#function-onconnectaddress)
+  - [onReceive](#function-onreceiveaddress-message-1)
+  - [onDisconnect](#function-ondisconnectaddress-error)
+  - [onClose](#function-oncloseerror-2)
+  - [send](#function-sendaddress-message-1)
+  - [drop](#function-dropaddress)
+  - [close](#function-close-2)
 
 ## `function` uuidv4
 
@@ -55,7 +55,7 @@ Some description goes here
 
   contains `onOpen`, `onReceive`, `onClose` event functions
 
-**returns** `object` [udpPeer]()
+**returns** [`object` udpPeer](#object-udppeer)
 
 > This function does things!
 
@@ -87,7 +87,7 @@ var myPeer = socketify.udpPeer(":9696", {
 
   contains `onOpen`, `onReceive`, `onClose` event functions
 
-**returns** `object` [tcpClient]()
+**returns** [`object` tcpClient](#object-tcpclient)
 
 > This function does things!
 
@@ -119,7 +119,7 @@ var myClient = socketify.tcpClient("127.0.0.1:9696", {
 
   contains `onOpen`, `onConnect`, `onReceive`, `onDisconnect` `onClose` event functions
 
-**returns** `object` [tcpServer]()
+**returns** [`object` tcpServer](#object-tcpserver)
 
 > This function does things!
 
