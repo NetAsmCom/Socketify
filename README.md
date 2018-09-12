@@ -11,9 +11,11 @@ I was prototyping a web-based multiplayer-online game then realized that WebSock
 **How?**\
 Explain how this project achieve the solution.
 
-## Installation
-
 ## Getting Started
+
+- [Installation Guides](INSTALL.md)
+- [Example Test Page](Example/index.html)
+- [API Documentation](API.md)
 
 ## Roadmap
 
