@@ -2,7 +2,7 @@
 
 > TCP and UDP Sockets API on Chrome, Firefox and Safari desktop browsers with extensions via native messaging.
 
-**What?** Explain what this project is about.
+A cross-platform, cross-browser extension for desktop browsers that injects simple & easy-to-use `UdpPeer`, `TcpServer` and `TcpClient` sockets API into page window.
 
 **Why?** Explain why this project needed.
 
