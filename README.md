@@ -22,7 +22,7 @@ Explain how this project achieve the solution.
 - [x] Native Messaging Host
 - [x] Socketify API
 - [x] Chrome Extension
-- [ ] Readme Sections
+- [ ] Installation Guides
 - [ ] API Documentation
 - [ ] Firefox Porting
 - [ ] Safari Extension
