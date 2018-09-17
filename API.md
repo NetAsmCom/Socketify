@@ -153,48 +153,260 @@ var myServer = socketify.tcpServer(":9696", {
 
 ## `object` udpPeer
 
+Object description
+
 ### `string` id
+
+> This field is useful!
+
+```js
+// Sample code piece
+```
 
 ### `function` onOpen(address)
 
+- `string` **address**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
+
 ### `function` onReceive(address, message)
+
+- `string` **address**
+
+  parameter description
+
+- `object` **message**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
 
 ### `function` onClose(error)
 
+- `string` **error**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
+
 ### `function` send(address, message)
 
+- `string` **address**
+
+  parameter description
+
+- `object` **message**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
+
 ### `function` close()
+
+> This function does things!
+
+```js
+// Sample code piece
+```
 
 ## `object` tcpClient
 
+Object description
+
 ### `string` id
 
+> This field is useful!
+
+```js
+// Sample code piece
+```
+
 ### `function` onOpen(address)
+
+- `string` **address**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
 
 ### `function` onReceive(message)
 
+- `object` **message**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
+
 ### `function` onClose(error)
+
+- `string` **error**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
 
 ### `function` send(message)
 
+- `object` **message**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
+
 ### `function` close()
+
+> This function does things!
+
+```js
+// Sample code piece
+```
 
 ## `object` tcpServer
 
+Object description
+
 ### `string` id
+
+> This field is useful!
+
+```js
+// Sample code piece
+```
 
 ### `function` onOpen(address)
 
+- `string` **address**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
+
 ### `function` onConnect(address)
+
+- `string` **address**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
 
 ### `function` onReceive(address, message)
 
+- `string` **address**
+
+  parameter description
+
+- `object` **message**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
+
 ### `function` onDisconnect(address, error)
+
+- `string` **address**
+
+  parameter description
+
+- `string` **error**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
 
 ### `function` onClose(error)
 
+- `string` **error**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
+
 ### `function` send(address, message)
+
+- `string` **address**
+
+  parameter description
+
+- `object` **message**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
 
 ### `function` drop(address)
 
+- `string` **address**
+
+  parameter description
+
+> This function does things!
+
+```js
+// Sample code piece
+```
+
 ### `function` close()
+
+> This function does things!
+
+```js
+// Sample code piece
+```
