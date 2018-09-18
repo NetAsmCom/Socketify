@@ -14,7 +14,7 @@
 - [Example Test Page](Example/index.html)
 - [API Documentation](API.md)
 
-## Roadmap
+## TODO
 
 - [x] Native Messaging Host
 - [x] Socketify API
@@ -26,3 +26,4 @@
 - [ ] Extension Popup Menu
 - [ ] Host App Installer
 - [ ] Encryption Support
+- [ ] Unity Support
