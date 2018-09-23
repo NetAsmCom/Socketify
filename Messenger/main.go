@@ -92,13 +92,9 @@ func main() {
 	}
 
 	if *uninstallPtr {
-		if uninstall() {
-			os.Stdout.Write([]byte("uninstall: succeeded\n"))
-			os.Exit(0)
-		} else {
-			os.Stdout.Write([]byte("uninstall: failed\n"))
-			os.Exit(1)
-		}
+		uninstall()
+		os.Stdout.Write([]byte("uninstall: completed\n"))
+		os.Exit(0)
 	}
 
 	init := read()

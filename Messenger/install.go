@@ -36,7 +36,7 @@ func install(chromeExtID string, firefoxExtID string) bool {
 	currentUser, error := user.Current()
 	if error != nil {
 		os.Stdout.Write([]byte(fmt.Sprintf("install: %s\n", error.Error())))
-		os.Stdout.Write([]byte("intall: cannot get current user\n"))
+		os.Stdout.Write([]byte("install: cannot get current user\n"))
 		return false
 	}
 	_ = os.Mkdir(filepath.Join(currentUser.HomeDir, "Socketify"), os.ModePerm)
@@ -120,7 +120,66 @@ func install(chromeExtID string, firefoxExtID string) bool {
 	return true
 }
 
-func uninstall() bool {
-	os.Stdout.Write([]byte("uninstall: not implemented yet"))
-	return false
+func uninstall() {
+	currentUser, error := user.Current()
+	if error != nil {
+		os.Stdout.Write([]byte(fmt.Sprintf("uninstall: %s\n", error.Error())))
+		os.Stdout.Write([]byte("uninstall: cannot get current user\n"))
+		return
+	}
+
+	binaryPath, error := os.Executable()
+	if error != nil {
+		os.Stdout.Write([]byte(fmt.Sprintf("install: %s\n", error.Error())))
+		os.Stdout.Write([]byte("uninstall: cannot get binary path\n"))
+		return
+	}
+
+	binaryStat, error := os.Stat(binaryPath)
+	if error != nil {
+		os.Stdout.Write([]byte(fmt.Sprintf("install: %s\n", error.Error())))
+		os.Stdout.Write([]byte("uninstall: cannot get binary stat\n"))
+		return
+	}
+
+	if binaryStat.Mode().IsRegular() != true {
+		os.Stdout.Write([]byte("uninstall: binary is not a regular file\n"))
+		return
+	}
+
+	userBinaryPath := filepath.Join(currentUser.HomeDir, "Socketify", binaryStat.Name())
+	error = os.Remove(userBinaryPath)
+	if error != nil {
+		os.Stdout.Write([]byte(fmt.Sprintf("uninstall: %s\n", error.Error())))
+		os.Stdout.Write([]byte("uninstall: cannot remove binary\n"))
+	}
+
+	switch runtime.GOOS {
+	case "darwin":
+		chromeManifestPath := filepath.Join(currentUser.HomeDir,
+			"Library", "Application Support",
+			"Google", "Chrome", "NativeMessagingHosts",
+			"net.socketify.messenger.json")
+		error = os.Remove(chromeManifestPath)
+		if error != nil {
+			os.Stdout.Write([]byte(fmt.Sprintf("uninstall: %s\n", error.Error())))
+			os.Stdout.Write([]byte("uninstall: cannot remove chrome manifest\n"))
+		}
+
+		firefoxManifestPath := filepath.Join(currentUser.HomeDir,
+			"Library", "Application Support",
+			"Mozilla", "NativeMessagingHosts",
+			"net.socketify.messenger.json")
+		error = os.Remove(firefoxManifestPath)
+		if error != nil {
+			os.Stdout.Write([]byte(fmt.Sprintf("uninstall: %s\n", error.Error())))
+			os.Stdout.Write([]byte("uninstall: cannot remove firefox manifest\n"))
+		}
+	case "windows":
+		os.Stdout.Write([]byte("uninstall: windows uninstallation not implemented yet"))
+	case "linux":
+		os.Stdout.Write([]byte("uninstall: linux uninstallation not implemented yet"))
+	default:
+		os.Stdout.Write([]byte("uninstall: unknown os platform"))
+	}
 }
