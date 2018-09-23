@@ -1,9 +1,0 @@
-{
-    "name": "net.socketify.messenger",
-    "description": "Socketify - TCP and UDP Sockets API",
-    "path": "HOST_PATH",
-    "type": "stdio",
-    "allowed_extensions": [
-        "extension@socketify.net"
-    ]
-}
