@@ -19,7 +19,7 @@
 - [x] Native Messaging Host
 - [x] Socketify API
 - [x] Chrome Extension
-- [ ] Firefox Porting
+- [x] Firefox Porting
 - [ ] Installation Guides
 - [ ] API Documentation
 - [ ] Safari Extension
