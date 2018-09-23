@@ -107,7 +107,11 @@ func install(chromeExtID string, firefoxExtID string) bool {
 			return false
 		}
 	case "windows":
+		os.Stdout.Write([]byte("install: windows installation not implemented yet\n"))
+		return false
 	case "linux":
+		os.Stdout.Write([]byte("install: linux installation not implemented yet\n"))
+		return false
 	default:
 		os.Stdout.Write([]byte("install: unknown os platform\n"))
 		return false
@@ -117,5 +121,6 @@ func install(chromeExtID string, firefoxExtID string) bool {
 }
 
 func uninstall() bool {
-	return true
+	os.Stdout.Write([]byte("uninstall: not implemented yet"))
+	return false
 }
