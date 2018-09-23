@@ -21,8 +21,9 @@ func write(msg message) {
 
 	lenBytes := make([]byte, 4)
 	nativeEndian.PutUint32(lenBytes, uint32(len(msgBytes)))
+	os.Stdout.Write(lenBytes)
 
-	os.Stdout.Write(append(lenBytes, msgBytes...))
+	os.Stdout.Write(msgBytes)
 }
 
 func read() message {
