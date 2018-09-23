@@ -3,7 +3,12 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"os"
+)
+
+const (
+	version = "1.0"
 )
 
 type message struct {
@@ -72,7 +77,7 @@ func main() {
 	flag.Parse()
 
 	if *versionPtr {
-		os.Stdout.Write([]byte("version: 1.0\n"))
+		os.Stdout.Write([]byte(fmt.Sprintf("version: %s\n", version)))
 		os.Exit(0)
 	}
 
