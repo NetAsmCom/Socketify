@@ -26,23 +26,34 @@ func write(msg message) {
 }
 
 func read() message {
-	buffer := make([]byte, 2048)
+	buffer := make([]byte, 4)
 	length, error := os.Stdin.Read(buffer)
-	if error != nil {
+	if error != nil || length != 4 {
 		return message{
 			Event: "error",
-			Error: "cannot read input",
-			Debug: error.Error(),
+			Error: "cannot read input size",
+			Debug: error.Error() + ">" + string(buffer),
+		}
+	}
+
+	size := nativeEndian.Uint32(buffer)
+	buffer = make([]byte, size)
+	length, error = os.Stdin.Read(buffer)
+	if error != nil && length != int(size) {
+		return message{
+			Event: "error",
+			Error: "cannot read input message",
+			Debug: error.Error() + ">" + string(buffer),
 		}
 	}
 
 	msg := message{}
-	error = json.Unmarshal(buffer[4:length], &msg)
+	error = json.Unmarshal(buffer, &msg)
 	if error != nil {
 		return message{
 			Event: "error",
-			Error: "cannot deserialize input",
-			Debug: error.Error(),
+			Error: "cannot deserialize input message",
+			Debug: error.Error() + ">" + string(buffer),
 		}
 	}
 
