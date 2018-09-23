@@ -69,22 +69,18 @@ browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                     _msg: message
                 });
             });
-
-            var m = {
+            
+            port.postMessage({
                 event: message._msg.event,
                 address: message._msg.address
-            };
-            console.log("post:", m);
-            port.postMessage(m);
+            });
         }
         return;
     }
 
-    var m = {
+    port.postMessage({
         event: message._msg.event,
         address: message._msg.address,
         payload: JSON.stringify(message._msg.payload)
-    };
-    console.log("post:", m);
-    port.postMessage(m);
+    });
 });
