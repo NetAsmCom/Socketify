@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"os"
 )
 
@@ -62,6 +63,37 @@ func read() message {
 }
 
 func main() {
+	versionPtr := flag.Bool("version", false, "print version")
+	installPtr := flag.Bool("install", false, "install host app for browsers")
+	uninstallPtr := flag.Bool("uninstall", false, "uninstall host app from browsers")
+
+	flag.Parse()
+
+	if *versionPtr {
+		os.Stdout.Write([]byte("version: 1.0\n"))
+		os.Exit(0)
+	}
+
+	if *installPtr {
+		if install() {
+			os.Stdout.Write([]byte("install: succeeded\n"))
+			os.Exit(0)
+		} else {
+			os.Stdout.Write([]byte("install: failed\n"))
+			os.Exit(1)
+		}
+	}
+
+	if *uninstallPtr {
+		if uninstall() {
+			os.Stdout.Write([]byte("uninstall: succeeded\n"))
+			os.Exit(0)
+		} else {
+			os.Stdout.Write([]byte("uninstall: failed\n"))
+			os.Exit(1)
+		}
+	}
+
 	init := read()
 	if init.Event == "error" {
 		write(message{
