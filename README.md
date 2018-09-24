@@ -1,4 +1,4 @@
-<img src="Icon.svg" height="128">
+<img src="LOGO.svg" height="128">
 
 # Socketify
 
