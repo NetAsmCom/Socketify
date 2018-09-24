@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"golang.org/x/sys/windows/registry"
 )
 
 const (
@@ -76,11 +78,11 @@ func install(chromeExtID string, firefoxExtID string) bool {
 	}
 
 	chromeManifestString := chromeManifest
-	chromeManifestString = strings.Replace(chromeManifestString, "BIN_PATH", userBinaryPath, 1)
+	chromeManifestString = strings.Replace(chromeManifestString, "BIN_PATH", filepath.ToSlash(userBinaryPath), 1)
 	chromeManifestString = strings.Replace(chromeManifestString, "EXT_ID", chromeExtID, 1)
 
 	firefoxManifestString := firefoxManifest
-	firefoxManifestString = strings.Replace(firefoxManifestString, "BIN_PATH", userBinaryPath, 1)
+	firefoxManifestString = strings.Replace(firefoxManifestString, "BIN_PATH", filepath.ToSlash(userBinaryPath), 1)
 	firefoxManifestString = strings.Replace(firefoxManifestString, "EXT_ID", firefoxExtID, 1)
 
 	switch runtime.GOOS {
@@ -107,8 +109,47 @@ func install(chromeExtID string, firefoxExtID string) bool {
 			return false
 		}
 	case "windows":
-		os.Stdout.Write([]byte("install: windows installation not implemented yet\n"))
-		return false
+		chromeManifestPath := filepath.Join(currentUser.HomeDir, "Socketify", "net.socketify.messenger_chrome.json")
+		error = ioutil.WriteFile(chromeManifestPath, []byte(chromeManifestString), os.ModePerm)
+		if error != nil {
+			os.Stdout.Write([]byte(fmt.Sprintf("install: %s\n", error.Error())))
+			os.Stdout.Write([]byte("install: cannot write chrome manifest\n"))
+			return false
+		}
+
+		firefoxManifestPath := filepath.Join(currentUser.HomeDir, "Socketify", "net.socketify.messenger_firefox.json")
+		error = ioutil.WriteFile(firefoxManifestPath, []byte(firefoxManifestString), os.ModePerm)
+		if error != nil {
+			os.Stdout.Write([]byte(fmt.Sprintf("install: %s\n", error.Error())))
+			os.Stdout.Write([]byte([]byte("install: cannot write firefox manifest\n")))
+			return false
+		}
+
+		key, _, error := registry.CreateKey(registry.CURRENT_USER, `SOFTWARE\Google\Chrome\NativeMessagingHosts\net.socketify.messenger`, registry.WRITE)
+		if error != nil {
+			os.Stdout.Write([]byte(fmt.Sprintf("install: %s\n", error.Error())))
+			os.Stdout.Write([]byte("install: cannot create chrome registry key\n"))
+			return false
+		}
+		error = key.SetStringValue("", chromeManifestPath)
+		if error != nil {
+			os.Stdout.Write([]byte(fmt.Sprintf("install: %s\n", error.Error())))
+			os.Stdout.Write([]byte("install: cannot set chrome registry key\n"))
+			return false
+		}
+
+		key, _, error = registry.CreateKey(registry.CURRENT_USER, `SOFTWARE\Mozilla\NativeMessagingHosts\net.socketify.messenger`, registry.WRITE)
+		if error != nil {
+			os.Stdout.Write([]byte(fmt.Sprintf("install: %s\n", error.Error())))
+			os.Stdout.Write([]byte("install: cannot create firefox registry key\n"))
+			return false
+		}
+		error = key.SetStringValue("", firefoxManifestPath)
+		if error != nil {
+			os.Stdout.Write([]byte(fmt.Sprintf("install: %s\n", error.Error())))
+			os.Stdout.Write([]byte("install: cannot set firefox registry key\n"))
+			return false
+		}
 	case "linux":
 		os.Stdout.Write([]byte("install: linux installation not implemented yet\n"))
 		return false
@@ -176,7 +217,31 @@ func uninstall() {
 			os.Stdout.Write([]byte("uninstall: cannot remove firefox manifest\n"))
 		}
 	case "windows":
-		os.Stdout.Write([]byte("uninstall: windows uninstallation not implemented yet"))
+		chromeManifestPath := filepath.Join(currentUser.HomeDir, "Socketify", "net.socketify.messenger_chrome.json")
+		error = os.Remove(chromeManifestPath)
+		if error != nil {
+			os.Stdout.Write([]byte(fmt.Sprintf("uninstall: %s\n", error.Error())))
+			os.Stdout.Write([]byte("uninstall: cannot remove chrome manifest\n"))
+		}
+
+		firefoxManifestPath := filepath.Join(currentUser.HomeDir, "Socketify", "net.socketify.messenger_firefox.json")
+		error = os.Remove(firefoxManifestPath)
+		if error != nil {
+			os.Stdout.Write([]byte(fmt.Sprintf("uninstall: %s\n", error.Error())))
+			os.Stdout.Write([]byte("uninstall: cannot remove firefox manifest\n"))
+		}
+
+		error = registry.DeleteKey(registry.CURRENT_USER, `SOFTWARE\Google\Chrome\NativeMessagingHosts\net.socketify.messenger`)
+		if error != nil {
+			os.Stdout.Write([]byte(fmt.Sprintf("uninstall: %s\n", error.Error())))
+			os.Stdout.Write([]byte("uninstall: cannot delete chrome registry key\n"))
+		}
+
+		error = registry.DeleteKey(registry.CURRENT_USER, `SOFTWARE\Mozilla\NativeMessagingHosts\net.socketify.messenger`)
+		if error != nil {
+			os.Stdout.Write([]byte(fmt.Sprintf("uninstall: %s\n", error.Error())))
+			os.Stdout.Write([]byte("uninstall: cannot delete firefox registry key\n"))
+		}
 	case "linux":
 		os.Stdout.Write([]byte("uninstall: linux uninstallation not implemented yet"))
 	default:
