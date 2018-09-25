@@ -9,8 +9,6 @@ You need to install both `Extension` and `Messenger` to have `Socketify` API ava
   - [Firefox](#firefox)
   - [Safari](#safari)
 - [Messenger](#messenger)
-  - [Build](#build)
-  - [Install](#install)
 
 ## Extension
 
@@ -28,6 +26,4 @@ You need to install both `Extension` and `Messenger` to have `Socketify` API ava
 
 ## Messenger
 
-### Build
-
-### Install
+![Build and Install Messenger Host App](Installer/Messenger.gif)
