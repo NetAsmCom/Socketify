@@ -1,6 +1,6 @@
 # Installation Guides
 
-You need to install both `Extension` and `Messenger` to have `Socketify` API available.
+You need to install both [`Extension`](#extension) and [`Messenger`](#messenger) to have [`Socketify` API](API.md) available.
 
 ## Contents
 
