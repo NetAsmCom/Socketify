@@ -1,19 +1,33 @@
 # Installation Guides
 
+You need to install both `Extension` and `Messenger` to have `Socketify` API available.
+
 ## Contents
 
-- [Windows](#windows)
-- [MacOS](#macos)
-- [Linux](#linux)
+- [Extension](#extension)
+  - [Chrome](#chrome)
+  - [Firefox](#firefox)
+  - [Safari](#safari)
+- [Messenger](#messenger)
+  - [Build](#build)
+  - [Install](#install)
 
-### Windows
+## Extension
 
-1. [Download and install Go &nearr;](https://golang.org)
+### Chrome
 
-### MacOS
+![Load Chrome Extension](Installer/Chrome.gif)
 
-1. [Download and install Go &nearr;](https://golang.org)
+### Firefox
 
-### Linux
+![Load Firefox Extension](Installer/Firefox.gif)
 
-1. [Download and install Go &nearr;](https://golang.org)
+### Safari
+
+> TODO
+
+## Messenger
+
+### Build
+
+### Install

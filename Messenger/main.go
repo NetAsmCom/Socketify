@@ -70,8 +70,8 @@ func read() message {
 func main() {
 	versionPtr := flag.Bool("version", false, "print version")
 	installPtr := flag.Bool("install", false, "install host app for browsers")
-	chromeExtIDPtr := flag.String("chromeExtId", "aaaaaaaaaaabbbbbbbbbbccccccccccc", "chrome extension id to allow")
-	firefoxExtIDPtr := flag.String("firefoxExtId", "extension@socketify.net", "firefox extension id to allow")
+	chromeExtIDPtr := flag.String("chromeExtID", "aaaaaaaaaaabbbbbbbbbbccccccccccc", "chrome extension id to allow")
+	firefoxExtIDPtr := flag.String("firefoxExtID", "extension@socketify.net", "firefox extension id to allow")
 	uninstallPtr := flag.Bool("uninstall", false, "uninstall host app from browsers")
 
 	flag.Parse()
