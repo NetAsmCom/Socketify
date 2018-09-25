@@ -24,8 +24,8 @@
 - [x] Firefox Porting
 - [ ] Installation Guides
 - [ ] API Documentation
-- [ ] Safari Extension
+- [ ] Unity WebGL Support
 - [ ] Extension Popup Menu
 - [ ] Host App Installer
+- [ ] Safari Extension
 - [ ] Encryption Support
-- [ ] Unity Support
