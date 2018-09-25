@@ -33,7 +33,7 @@ You need to install both [`Extension`](#extension) and [`Messenger`](#messenger)
 
 ### Safari
 
-> TODO
+> TODO: Planned
 
 ## Messenger
 

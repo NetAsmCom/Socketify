@@ -22,7 +22,7 @@
 - [x] Socketify API
 - [x] Chrome Extension
 - [x] Firefox Porting
-- [ ] Installation Guides
+- [x] Installation Guides
 - [ ] API Documentation
 - [ ] Unity WebGL Support
 - [ ] Extension Popup Menu
