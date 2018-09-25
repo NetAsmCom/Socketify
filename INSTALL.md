@@ -54,7 +54,9 @@ You need to install both [`Extension`](#extension) and [`Messenger`](#messenger)
     ```console
     ./Messenger -install -chromeExtID=<ID> -firefoxExtID=<ID>
     ```
+
     or
+
     ```console
     "Messenger.exe" -install -chromeExtID=<ID> -firefoxExtID=<ID>
     ```
