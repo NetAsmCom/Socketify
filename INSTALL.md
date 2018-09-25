@@ -2,30 +2,18 @@
 
 ## Contents
 
-- [Chrome](#chrome)
-  - [Windows](#windows)
-  - [MacOS](#macos)
-  - [Linux](#linux)
-- [Safari](#safari)
-- [Firefox](#firefox)
-  - [Windows](#windows-1)
-  - [MacOS](#macos-1)
-  - [Linux](#linux-1)
-
-## Chrome
+- [Windows](#windows)
+- [MacOS](#macos)
+- [Linux](#linux)
 
 ### Windows
 
-### MacOS
-
-### Linux
-
-## Safari
-
-## Firefox
-
-### Windows
+1. [Download and install Go &nearr;](https://golang.org)
 
 ### MacOS
 
+1. [Download and install Go &nearr;](https://golang.org)
+
 ### Linux
+
+1. [Download and install Go &nearr;](https://golang.org)
