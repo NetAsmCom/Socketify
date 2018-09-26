@@ -52,7 +52,7 @@ You need to install both [`Extension`](#extension) and [`Messenger`](#messenger)
     ```
 6. Install by specifying extension `ID`s
     ```console
-    "Messenger.exe" -install -chromeExtID=<ID> -firefoxExtID=<ID>
-
     ./Messenger -install -chromeExtID=<ID> -firefoxExtID=<ID>
+
+    Messenger.exe -install -chromeExtID=<ID> -firefoxExtID=<ID>
     ```
