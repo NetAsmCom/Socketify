@@ -45,9 +45,9 @@ console.log(`my cool universally unique ID is ${coolID}`);
 
 Some description goes here
 
-### `function` udpPeer(address, handlers)
+### `function` udpPeer(bindAddress, handlers)
 
-- `string` **address**
+- `string` **bindAddress**
 
   local address to bind socket
 
@@ -77,9 +77,9 @@ var myPeer = socketify.udpPeer(":9696", {
 });
 ```
 
-### `function` tcpClient(address, handlers)
+### `function` tcpClient(serverAddress, handlers)
 
-- `string` **address**
+- `string` **serverAddress**
 
   server address to connect
 
@@ -109,11 +109,11 @@ var myClient = socketify.tcpClient("127.0.0.1:9696", {
 });
 ```
 
-### `function` tcpServer(address, handlers)
+### `function` tcpServer(listenAddress, handlers)
 
 - `string` **address**
 
-  local address to bind socket
+  local address to listen from
 
 - `object` **handlers**
 
