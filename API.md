@@ -34,7 +34,7 @@
 
 ## `function` uuidv4
 
-Takes no parameter and returns _UUIDv4_ `string` back.
+Takes no parameter, generates and returns _UUIDv4_ `string` back.
 
 ```js
 var coolID = uuidv4();
@@ -43,7 +43,7 @@ console.log(`my cool universally unique ID is ${coolID}`);
 
 ## `object` socketify
 
-Some description goes here
+This object being injected by content script at document start event and exposes socket creation functions to window.
 
 ### `function` udpPeer(bindAddress, handlers)
 
@@ -53,11 +53,11 @@ Some description goes here
 
 - `object` **handlers**
 
-  contains `onOpen`, `onReceive`, `onClose` event functions
+  contains `onOpen`, `onReceive`, `onClose` event handling functions
 
-**returns** [`object` udpPeer](#object-udppeer)
+  **returns** [`object` udpPeer](#object-udppeer)
 
-> This function does things!
+Creates UDP socket, binds to specified address and fires `onOpen` or `onClose` event afterwards.
 
 ```js
 var myPeer = socketify.udpPeer(":9696", {
@@ -87,9 +87,9 @@ var myPeer = socketify.udpPeer(":9696", {
 
   contains `onOpen`, `onReceive`, `onClose` event functions
 
-**returns** [`object` tcpClient](#object-tcpclient)
+  **returns** [`object` tcpClient](#object-tcpclient)
 
-> This function does things!
+Creates TCP socket, opens connection to server with specified address and fires `onOpen` or `onClose` event afterwards.
 
 ```js
 var myClient = socketify.tcpClient("127.0.0.1:9696", {
@@ -111,7 +111,7 @@ var myClient = socketify.tcpClient("127.0.0.1:9696", {
 
 ### `function` tcpServer(listenAddress, handlers)
 
-- `string` **address**
+- `string` **listenAddress**
 
   local address to listen from
 
@@ -119,9 +119,9 @@ var myClient = socketify.tcpClient("127.0.0.1:9696", {
 
   contains `onOpen`, `onConnect`, `onReceive`, `onDisconnect` `onClose` event functions
 
-**returns** [`object` tcpServer](#object-tcpserver)
+  **returns** [`object` tcpServer](#object-tcpserver)
 
-> This function does things!
+Creates TCP socket, starts listening on specified address and fires `onOpen` or `onClose` afterwards.
 
 ```js
 var myServer = socketify.tcpServer(":9696", {
