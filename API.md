@@ -153,19 +153,19 @@ var myServer = socketify.tcpServer(":9696", {
 
 ## `object` udpPeer
 
-Object description
+UDP socket instance on browser that bridges native calls.
 
 ### `string` id
 
-> This field is useful!
+Unique socket id assigned by window to specify instance, primarly used to dispatch calls.
 
 ```js
 // Sample code piece
 ```
 
-### `function` onOpen(address)
+### `function` onOpen(bindAddress)
 
-- `string` **address**
+- `string` **bindAddress**
 
   parameter description
 
@@ -229,19 +229,19 @@ Object description
 
 ## `object` tcpClient
 
-Object description
+TCP client socket instance on browser that bridges native calls.
 
 ### `string` id
 
-> This field is useful!
+Unique socket id assigned by window to specify instance, primarly used to dispatch calls.
 
 ```js
 // Sample code piece
 ```
 
-### `function` onOpen(address)
+### `function` onOpen(localAddress)
 
-- `string` **address**
+- `string` **localAddress**
 
   parameter description
 
@@ -297,19 +297,19 @@ Object description
 
 ## `object` tcpServer
 
-Object description
+TCP server socket instance on browser that bridges native calls.
 
 ### `string` id
 
-> This field is useful!
+Unique socket id assigned by window to specify instance, primarly used to dispatch calls.
 
 ```js
 // Sample code piece
 ```
 
-### `function` onOpen(address)
+### `function` onOpen(listenAddress)
 
-- `string` **address**
+- `string` **listenAddress**
 
   parameter description
 
