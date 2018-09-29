@@ -53,7 +53,7 @@ This object being injected by content script at document start event and exposes
 
 - `object` **handlers**
 
-  contains `onOpen`, `onReceive`, `onClose` event handling functions
+  contains [`onOpen`](#function-onopenbindaddress), [`onReceive`](#function-onreceivepeeraddress-message), [`onClose`](#function-oncloseerror) event handling functions
 
   **returns** [`object` udpPeer](#object-udppeer)
 
@@ -85,7 +85,7 @@ var myPeer = socketify.udpPeer(":9696", {
 
 - `object` **handlers**
 
-  contains `onOpen`, `onReceive`, `onClose` event functions
+  contains [`onOpen`](#function-onopenlocaladdress), [`onReceive`](#function-onreceivemessage), [`onClose`](#function-oncloseerror-1) event functions
 
   **returns** [`object` tcpClient](#object-tcpclient)
 
@@ -117,7 +117,7 @@ var myClient = socketify.tcpClient("127.0.0.1:9696", {
 
 - `object` **handlers**
 
-  contains `onOpen`, `onConnect`, `onReceive`, `onDisconnect` `onClose` event functions
+  contains [`onOpen`](#function-onopenlistenaddress), [`onConnect`](#function-onconnectclientaddress), [`onReceive`](#function-onreceiveclientaddress-message), [`onDisconnect`](#function-ondisconnectclientaddress-error), [`onClose`](#function-oncloseerror-2) event functions
 
   **returns** [`object` tcpServer](#object-tcpserver)
 
