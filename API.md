@@ -160,24 +160,24 @@ UDP socket instance on browser that bridges native calls.
 Unique socket id assigned by window to specify instance, primarly used to dispatch calls.
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ### `function` onOpen(bindAddress)
 
 - `string` **bindAddress**
 
-  parameter description
+  local bound address
 
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
-### `function` onReceive(address, message)
+### `function` onReceive(peerAddress, message)
 
-- `string` **address**
+- `string` **peerAddress**
 
   parameter description
 
@@ -188,7 +188,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ### `function` onClose(error)
@@ -200,12 +200,12 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
-### `function` send(address, message)
+### `function` send(peerAddress, message)
 
-- `string` **address**
+- `string` **peerAddress**
 
   parameter description
 
@@ -216,7 +216,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ### `function` close()
@@ -224,7 +224,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ## `object` tcpClient
@@ -236,19 +236,19 @@ TCP client socket instance on browser that bridges native calls.
 Unique socket id assigned by window to specify instance, primarly used to dispatch calls.
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ### `function` onOpen(localAddress)
 
 - `string` **localAddress**
 
-  parameter description
+  local bound address
 
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ### `function` onReceive(message)
@@ -260,7 +260,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ### `function` onClose(error)
@@ -272,7 +272,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ### `function` send(message)
@@ -284,7 +284,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ### `function` close()
@@ -292,7 +292,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ## `object` tcpServer
@@ -304,36 +304,36 @@ TCP server socket instance on browser that bridges native calls.
 Unique socket id assigned by window to specify instance, primarly used to dispatch calls.
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ### `function` onOpen(listenAddress)
 
 - `string` **listenAddress**
 
+  local bound address
+
+> This function does things!
+
+```js
+// Sample code
+```
+
+### `function` onConnect(clientAddress)
+
+- `string` **clientAddress**
+
   parameter description
 
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
-### `function` onConnect(address)
+### `function` onReceive(clientAddress, message)
 
-- `string` **address**
-
-  parameter description
-
-> This function does things!
-
-```js
-// Sample code piece
-```
-
-### `function` onReceive(address, message)
-
-- `string` **address**
+- `string` **clientAddress**
 
   parameter description
 
@@ -344,12 +344,12 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
-### `function` onDisconnect(address, error)
+### `function` onDisconnect(clientAddress, error)
 
-- `string` **address**
+- `string` **clientAddress**
 
   parameter description
 
@@ -360,7 +360,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ### `function` onClose(error)
@@ -372,12 +372,12 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
-### `function` send(address, message)
+### `function` send(clientAddress, message)
 
-- `string` **address**
+- `string` **clientAddress**
 
   parameter description
 
@@ -388,19 +388,19 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
-### `function` drop(address)
+### `function` drop(clientAddress)
 
-- `string` **address**
+- `string` **clientAddress**
 
   parameter description
 
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
 
 ### `function` close()
@@ -408,5 +408,5 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 > This function does things!
 
 ```js
-// Sample code piece
+// Sample code
 ```
