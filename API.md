@@ -34,7 +34,7 @@
 
 ## `function` uuidv4
 
-Takes no parameter, generates and returns _UUIDv4_ `string` back.
+Takes no parameter, generates and returns [UUIDv4&nearr;](https://en.wikipedia.org/wiki/Universally_unique_identifier#Version_4_(random)) `string` back.
 
 ```js
 var coolID = uuidv4();
