@@ -193,9 +193,9 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 ### `function` onClose(error)
 
-- `string` **error**
+- `string` **error** _(optional)_
 
-  error message
+  error message, will be `undefined` if socket closed with [`function` close()](#function-close)
 
 > This function does things!
 
@@ -265,9 +265,9 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 ### `function` onClose(error)
 
-- `string` **error**
+- `string` **error** _(optional)_
 
-  error message
+  error message, will be `undefined` if socket closed with [`function` close()](#function-close-1)
 
 > This function does things!
 
@@ -353,9 +353,9 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
   disconnected client address
 
-- `string` **error**
+- `string` **error** _(optional)_
 
-  error message
+  error message, will be `undefined` if connection closed with [`function` drop()](#function-dropclientaddress)
 
 > This function does things!
 
@@ -365,9 +365,9 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 ### `function` onClose(error)
 
-- `string` **error**
+- `string` **error** _(optional)_
 
-  error message
+  error message, will be `undefined` if socket closed with [`function` close()](#function-close-2)
 
 > This function does things!
 
