@@ -39,10 +39,10 @@ You need to install both [`Extension`](#extension) and [`Messenger`](#messenger)
 
 ![Build and Install Messenger Host App](Installer/Messenger.gif)
 
-1. [Download and install Go](https://golang.org)
+1. [Download and install Go&nearr;](https://golang.org)
 2. Open terminal/console
 3. Go to `Messenger` directory
-4. _(only for Windows)_ Get [`registry`](https://godoc.org/golang.org/x/sys/windows/registry) package
+4. _(only for Windows)_ Get [`registry`&nearr;](https://godoc.org/golang.org/x/sys/windows/registry) package
     ```console
     go get -u golang.org/x/sys/windows/registry
     ```
