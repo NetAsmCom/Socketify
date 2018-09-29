@@ -179,11 +179,11 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 - `string` **peerAddress**
 
-  parameter description
+  sender peer address
 
 - `object` **message**
 
-  parameter description
+  message received from peer
 
 > This function does things!
 
@@ -195,7 +195,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 - `string` **error**
 
-  parameter description
+  error message
 
 > This function does things!
 
@@ -207,11 +207,11 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 - `string` **peerAddress**
 
-  parameter description
+  target peer address
 
 - `object` **message**
 
-  parameter description
+  message to send to peer
 
 > This function does things!
 
@@ -255,7 +255,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 - `object` **message**
 
-  parameter description
+  message received from server
 
 > This function does things!
 
@@ -267,7 +267,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 - `string` **error**
 
-  parameter description
+  error message
 
 > This function does things!
 
@@ -279,7 +279,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 - `object` **message**
 
-  parameter description
+  message to send to server
 
 > This function does things!
 
@@ -323,7 +323,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 - `string` **clientAddress**
 
-  parameter description
+  connected client address
 
 > This function does things!
 
@@ -335,11 +335,11 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 - `string` **clientAddress**
 
-  parameter description
+  sender client address
 
 - `object` **message**
 
-  parameter description
+  message received from client
 
 > This function does things!
 
@@ -351,11 +351,11 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 - `string` **clientAddress**
 
-  parameter description
+  disconnected client address
 
 - `string` **error**
 
-  parameter description
+  error message
 
 > This function does things!
 
@@ -367,7 +367,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 - `string` **error**
 
-  parameter description
+  error message
 
 > This function does things!
 
@@ -379,11 +379,11 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 - `string` **clientAddress**
 
-  parameter description
+  target client address
 
 - `object` **message**
 
-  parameter description
+  message to send to client
 
 > This function does things!
 
@@ -395,7 +395,7 @@ Unique socket id assigned by window to specify instance, primarly used to dispat
 
 - `string` **clientAddress**
 
-  parameter description
+  target client address
 
 > This function does things!
 
