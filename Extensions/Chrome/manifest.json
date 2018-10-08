@@ -1,7 +1,7 @@
 {
     "name": "Socketify",
-    "description": "TCP and UDP Sockets API",
-    "version": "1.0",
+    "description": "Secure TCP/UDP Sockets API",
+    "version": "2.0",
     "icons": {
         "16": "icon.png",
         "48": "icon.png",
